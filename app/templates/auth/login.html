@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+
+{% block csscontent %}
+<!-- Corrected CSS file path (removed leading slash) -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth/login.css') }}">
+<!-- Add intl-tel-input CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
+<style>
+  .iti {
+    width: 100%;
+    display: inline-block;
+  }
+  .iti__flag {
+    background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/img/flags.png");
+  }
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .iti__flag {
+      background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/img/flags@2x.png");
+    }
+  }
+  .iti__country-list {
+    width: 300px;
+  }
+  .iti__selected-dial-code {
+    color: #ffffff;
+  }
+  .iti__dial-code {
+    color: #000000;
+  }
+  .phone-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  .error-message {
+    color: #ff0000;
+    font-size: 12px;
+    margin-top: 5px;
+    display: none;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-body">
+  <div class="title">LOOP SENSE</div>
+  <!-- Login & Registration Forms -->
+  <div class="wrapper">
+    <!-- Login Form -->
+    <div class="form-wrapper sign-in">
+      <form action="{{ url_for('auth.login') }}" method="post">
+        <h2>Login</h2>
+        <div class="input-group">
+          <input type="text" name="email" required>
+          <label for="email">Email</label>
+        </div>
+        <div class="input-group">
+          <input type="password" name="password" required>
+          <label for="password">Password</label>
+        </div>
+        <!-- <div class="remember">
+          <label><input type="checkbox"> Remember me</label>
+        </div> -->
+        <button type="submit">Login</button>
+        <div class="signUp-link">
+          <p>Don't have an account?
+            <span 
+              class="signUpBtn-link" 
+              style="text-decoration: underline; color:#0ef; cursor: pointer;" 
+              onclick="window.location.href='#'"
+            >
+            Sign Up
+            </span>
+        </div>
+      </form>
+    </div>
+
+    <!-- Sign-Up Form -->
+    <div class="form-wrapper sign-up">
+      <form action="{{ url_for('auth.register') }}" method="post" id="signup-form">
+        <h2>Sign Up</h2>
+        <div class="input-group">
+          <input type="text" name="username" required>
+          <label for="username">Username</label>
+        </div>
+        <div class="input-group">
+          <input type="email" name="email" required>
+          <label for="email">Email</label>
+        </div>
+        <div class="input-group">
+          <input type="tel" id="phone" name="phone" class="phone-input" required>
+          <div class="error-message" id="phone-error"></div>
+        </div>
+        <div class="input-group">
+          <input type="password" name="password" required>
+          <label for="password">Password</label>
+        </div>
+        <div class="remember">
+          <label>
+            <input type="checkbox" required>
+            I agree to the <span 
+                style="text-decoration: underline; color:#0ef; cursor: pointer;" 
+                onclick="window.open('terms-and-conditions.html', '_blank')"
+              >  Terms & Conditions </span>
+          </label>
+        </div>
+        <button type="submit">Sign Up</button>
+        <div class="signUp-link">
+          <p>Already have an account? 
+            <span 
+              class="signInBtn-link" 
+              style="text-decoration: underline; color:#0ef; cursor: pointer;" 
+              onclick="window.location.href='#'"
+            >
+              Log In
+            </span>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block jscontent %}
+<!-- Corrected JavaScript file path (removed leading slash and closed the tag properly) -->
+<script src="{{ url_for('static', filename='js/user/login.js') }}"></script>
+<!-- Add intl-tel-input JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const phoneInput = document.querySelector("#phone");
+    const phoneError = document.querySelector("#phone-error");
+    const signupForm = document.getElementById("signup-form");
+
+    // Initialize intl-tel-input
+    const iti = window.intlTelInput(phoneInput, {
+      initialCountry: "in", // Set India as default
+      separateDialCode: true,
+      preferredCountries: ["in", "us", "gb", "ca", "au"], // Add preferred countries
+      utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+      formatOnDisplay: true,
+      autoPlaceholder: "aggressive",
+      customPlaceholder: function(selectedCountryPlaceholder, selectedCountryData) {
+        return "e.g. " + selectedCountryPlaceholder;
+      }
+    });
+
+    // Validate phone number on input
+    phoneInput.addEventListener('blur', function() {
+      if (phoneInput.value.trim()) {
+        if (iti.isValidNumber()) {
+          phoneError.style.display = 'none';
+          phoneInput.classList.remove('error');
+        } else {
+          phoneError.textContent = 'Please enter a valid phone number';
+          phoneError.style.display = 'block';
+          phoneInput.classList.add('error');
+        }
+      }
+    });
+
+    // Form submission validation
+    signupForm.addEventListener('submit', function(e) {
+      if (!iti.isValidNumber()) {
+        e.preventDefault();
+        phoneError.textContent = 'Please enter a valid phone number';
+        phoneError.style.display = 'block';
+        phoneInput.classList.add('error');
+      } else {
+        // Add the full international number to a hidden input
+        const fullNumber = iti.getNumber();
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'full_phone';
+        hiddenInput.value = fullNumber;
+        signupForm.appendChild(hiddenInput);
+      }
+    });
+  });
+</script>
+{% endblock %}

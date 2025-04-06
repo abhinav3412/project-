@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block csscontent %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin/warehouse.css') }}">
+{% endblock %}
+
+{% block content %}
+    <!-- Main Content -->
+    <div class="warehouse-management-container">
+        <div class="warehouse-management-box">
+            <div class="warehouse-header">
+                <h2>Warehouse Management</h2>
+                <button id="add-warehouse-btn" class="btn">Add New Warehouse</button>
+            </div>
+            
+            <!-- Filter Options -->
+            <div class="search-filter-section">
+                <input type="text" id="name-filter" placeholder="Search by name..." />
+                <input type="text" id="location-filter" placeholder="Search by location..." />
+                <button id="clear-filters">Clear Filters</button>
+            </div>
+
+            <!-- Warehouse Table -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Coordinates</th>
+                            <th>Food (kg)</th>
+                            <th>Water (L)</th>
+                            <th>Essential (kits)</th>
+                            <th>Clothes (sets)</th>
+                            <th>Manager</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="warehouse-list">
+                        <!-- Dynamically populated via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Warehouse Form Modal -->
+    <div id="warehouse-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Add Warehouse</h2>
+            <form id="warehouse-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location:</label>
+                        <input type="text" id="location" name="location" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="latitude">Latitude:</label>
+                        <input type="number" id="latitude" name="latitude" step="any" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="longitude">Longitude:</label>
+                        <input type="number" id="longitude" name="longitude" step="any" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="food_capacity">Food Capacity (kg):</label>
+                        <input type="number" id="food_capacity" name="food_capacity" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="water_capacity">Water Capacity (L):</label>
+                        <input type="number" id="water_capacity" name="water_capacity" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="essential_capacity">Essential Kits Capacity:</label>
+                        <input type="number" id="essential_capacity" name="essential_capacity" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="clothes_capacity">Clothes Sets Capacity:</label>
+                        <input type="number" id="clothes_capacity" name="clothes_capacity" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="manager_id">Warehouse Manager:</label>
+                        <select id="manager_id" name="manager_id">
+                            <option value="">Select a manager</option>
+                            <!-- Will be populated via JavaScript -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Status:</label>
+                        <select id="status" name="status" required>
+                            <option value="Operational">Operational</option>
+                            <option value="Maintenance">Maintenance</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jscontent %}
+    <script src="{{ url_for('static', filename='js/admin/warehouse.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,505 @@
+/* Camps Page */
+.camps-page {
+    display: flex;
+    flex-direction: row;
+    gap: 5%;
+    align-items: flex-start;
+    padding: 2vh 5%;
+    animation: fadeIn 1s ease-in-out;
+}
+.left-column, .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+    width: 50%;
+    animation: slideInFromLeft 1s ease-in-out;
+}
+
+/* Relief Camp Details Section */
+.camp-details {
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Frosted glass effect */
+    -webkit-backdrop-filter: blur(10px); /* For Safari compatibility */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+    padding: 3% 4%; /* Reduced padding */
+    border-radius: 20px; /* Slightly smaller border radius */
+    width: 100%;
+    max-width: 400px; /* Reduced max-width */
+    height: auto; /* Allow height to be dynamic */
+    text-align: center;
+    margin-bottom: 2vh;
+    opacity: 0.9;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Reduced shadow intensity */
+    transition: all 0.3s ease;
+}
+.camp-details:hover {
+    transform: translateY(-1vh); /* Lift effect on hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Enhanced shadow */
+}
+.camp-details h2 {
+    font-size: 1.6rem; /* Further reduced font size */
+    color: #a2fd65;
+    margin-bottom: 1.2vh;
+    transition: color 0.3s ease;
+}
+.camp-details h2:hover {
+    color: #ffdd57; /* Brighten heading on hover */
+}
+.camp-info p {
+    font-size: 1rem; /* Further reduced font size */
+    margin: 0.8vh 0;
+    color: beige;
+    font-weight: 200;
+    transition: opacity 0.3s ease;
+}
+.camp-info p:hover {
+    opacity: 0.8; /* Fade effect on hover */
+}
+#next-camp-btn, #prev-camp-btn, #request-btn {
+    margin-top: 1.2vh;
+    padding: 0.6vh 2vw; /* Reduced padding */
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 20px; /* Slightly smaller border radius */
+    cursor: pointer;
+    font-size: 1.2rem; /* Reduced font size */
+    transition: all 0.3s ease;
+}
+#next-camp-btn:hover, #prev-camp-btn:hover, #request-btn:hover {
+    background: #005bb5; /* Darker blue on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Announcements Section */
+.announcements-section {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 290px;
+    text-align: left;
+    opacity: 0.9;
+    margin-right: -55vh;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    max-height: 240px; /* Adjusted to show one announcement */
+    overflow-y: auto;
+    position: relative;
+}
+
+.announcements-section::-webkit-scrollbar {
+    width: 4px;
+}
+
+.announcements-section::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+}
+
+.announcements-section::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+}
+
+.announcements-section h2 {
+    color: #a2fd65;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+#announcements-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.announcement-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    border-left: 4px solid #a2fd65;
+    min-height: 80px; /* Fixed height for each announcement */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.announcement-item:hover {
+    transform: translateX(5px);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.announcement-item.approved {
+    border-left-color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.announcement-item.approved .announcement-message {
+    color: #4CAF50;
+}
+
+.announcement-item.rejected {
+    border-left-color: #f44336;
+    background: rgba(244, 67, 54, 0.1);
+}
+
+.announcement-item.rejected .announcement-message {
+    color: #f44336;
+    font-weight: bold;
+}
+
+.announcement-item.pending {
+    border-left-color: #ff9800;
+    background: rgba(255, 152, 0, 0.1);
+}
+.announcement-message {
+    color: white;
+    font-size: 0.85rem;
+    line-height: 1.3;
+    margin-bottom: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Show only 2 lines of text */
+    -webkit-box-orient: vertical;
+}
+
+.announcement-time {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.75rem;
+    font-style: italic;
+    text-align: right;
+}
+
+/* Search People Section */
+.search-section {
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Frosted glass effect */
+    -webkit-backdrop-filter: blur(10px); /* For Safari compatibility */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+    padding: 2vh 3%;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    opacity: 0.9;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    margin-bottom: 3vh;
+    transition: all 0.3s ease;
+    margin-left: -5.8vh;
+}
+.search-section:hover {
+    transform: translateY(-1vh); /* Lift effect on hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Enhanced shadow */
+}
+.search-section h2 {
+    color: #a2fd65;
+    transition: color 0.3s ease;
+}
+.search-section h2:hover {
+    color: #ffdd57; /* Brighten heading on hover */
+}
+#search-input {
+    width: 80%;
+    padding: 1vh;
+    font-size: 2vh;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 2vh;
+    transition: all 0.3s ease;
+}
+#search-input:focus {
+    border: 1px solid #007bff; /* Highlight input on focus */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+#search-btn {
+    padding: 1vh 2vh;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 2vh;
+    transition: all 0.3s ease;
+}
+#search-btn:hover {
+    background: #005bb5; /* Darker blue on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+.search-result {
+    margin-top: 2vh;
+    font-size: 2vh;
+    color: #ef9896;
+    transition: opacity 0.3s ease;
+}
+.search-result:hover {
+    opacity: 0.8; /* Fade effect on hover */
+}
+
+/* Camp Resource Overview Section */
+.charts-section {
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Frosted glass effect */
+    -webkit-backdrop-filter: blur(10px); /* For Safari compatibility */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+    padding: 2vh 3%;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 400px;
+    height: 100%;
+    max-height: 300px;
+    text-align: center;
+    margin-bottom: 2vh;
+    opacity: 0.9;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+.charts-section:hover {
+    transform: translateY(-1vh); /* Lift effect on hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Enhanced shadow */
+}
+.charts-section h2 {
+    color: #a2fd65;
+    transition: color 0.3s ease;
+}
+.charts-section h2:hover {
+    color: #ffdd57; /* Brighten heading on hover */
+}
+.chart-container {
+    margin-top: 2vh;
+    margin-bottom: 3vh;
+}
+#resources-chart {
+    display: block;
+    box-sizing: border-box;
+    max-height: 130px;
+    width: 300px;
+    margin-left: 24px;
+    transition: transform 0.3s ease;
+}
+#resources-chart:hover {
+    transform: scale(1.05); /* Slight zoom effect on hover */
+}
+/* Map Section */
+#map {
+    height: 300px; /* Define height for the map container */
+    width: 100%;
+    max-width: 750px;
+    border-radius: 15px;
+    margin-bottom: 1vh;
+    transition: all 0.3s ease;
+    margin-left: -5.8vh;
+}
+#map:hover {
+    transform: scale(1.02); /* Slight zoom effect on hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Enhanced shadow */
+}
+#directions-btn {
+    margin-top: 1vh;
+    padding: 1vh 2vh;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 2vh;
+    transition: all 0.3s ease;
+}
+#directions-btn:hover {
+    background: #005bb5; /* Darker blue on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Request Box */
+.request-box {
+    background: rgba(255, 255, 255, 0.1); /* Glassmorphism effect */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 2%;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 350px;
+    text-align: center;
+    margin-top: 34vh; /* Space below announcements section */
+    opacity: 0.9;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    color: white;
+}
+.request-box:hover {
+    transform: translateY(-1vh); /* Lift effect on hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Enhanced shadow */
+}
+.request-box h2 {
+    font-size: 1.6rem;
+    color: #a2fd65;
+    margin-bottom: 1.2vh;
+    transition: color 0.3s ease;
+}
+.request-box h2:hover {
+    color: #ffdd57; /* Brighten heading on hover */
+}
+.request-box ul {
+    list-style: disc;
+    padding-left: 20px;
+    margin-bottom: 1.5vh;
+    color: beige;
+    font-size: 1rem;
+    text-align: justify;
+    transition: opacity 0.3s ease;
+}
+.request-box ul:hover {
+    opacity: 0.8; /* Fade effect on hover */
+}
+#request-slot-btn {
+    margin-top: 1.2vh;
+    padding: 0.6vh 2vw;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+#request-slot-btn:hover {
+    background: #005bb5; /* Darker blue on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Request Form Popup */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.popup-content {
+    background: rgba(255, 255, 255, 0.1); /* Glassmorphism effect */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 3% 4%;
+    border-radius: 20px;
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+    opacity: 0.9;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+.popup-content h2 {
+    font-size: 1.6rem;
+    color: #a2fd65;
+    margin-bottom: 1.2vh;
+}
+.popup-content label {
+    display: block;
+    margin: 1vh 0 0.5vh;
+    color: rgb(255, 255, 255);
+    font-size: 1rem;
+}
+.popup-content input,
+.popup-content select {
+    width: 100%;
+    padding: 1vh;
+    margin-bottom: 1.5vh;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 1);
+    color: rgb(59, 59, 59);
+}
+.popup-content button[type="submit"] {
+    padding: 1vh 2vw;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+.popup-content button[type="submit"]:hover {
+    background: #005bb5;
+}
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    color: white;
+    cursor: pointer;
+}
+.close-btn:hover {
+    color: #ffdd57;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes slideInFromLeft {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+@keyframes blinker {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.announcements-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.clear-btn {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+.clear-btn:hover {
+    background-color: #cc0000;
+}

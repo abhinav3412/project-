@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block csscontent%}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/admin/dashboard.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/admin/map.css')}}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user/alert.css')}}" >
+    <style>
+        /* Hide popup modal by default */
+        #popup-modal {
+            display: none !important;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+  <div class="dashboard">
+    <!-- Top Row: Hero Section and Map -->
+    <div class="top-row">
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="welcome">
+          <h1>Welcome back, Admin!</h1>
+        </div>
+        <div class="quick-stats">
+          <div class="stat">
+            <span class="icon">👤</span>
+            <span class="value">{{ counts['users'] }}</span>
+            <span class="label">Users</span>
+          </div>
+          <div class="stat">
+            <span class="icon">🏕️</span>
+            <span class="value">{{ counts['camps'] }}</span>
+            <span class="label">Camps</span>
+          </div>
+          <div class="stat">
+            <span class="icon">🏚️</span>
+            <span class="value">{{ counts['warehouses'] }}</span>
+            <span class="label">Warehouses</span>
+          </div>
+          <div class="stat">
+            <span class="icon">📊</span>
+            <span class="value">{{ counts['sensors'] }}</span>
+            <span class="label">Sensors</span>
+          </div>
+        </div>
+        <div class="quick-actions">
+          <a href="{{ url_for('admin.user') }}" class="btn">Add User</a>
+          <a href="{{ url_for('admin.camp') }}" class="btn">Add Camp</a>
+          <a href="{{ url_for('admin.warehouse') }}" class="btn">Add Warehouse</a>
+          <a href="{{ url_for('admin.sensor') }}" class="btn">Add Sensor</a>
+        </div>
+      </section>
+
+      <!-- Map Container -->
+      <section class="map-container glass">
+        <div id="map"></div>
+      </section>
+    </div>
+
+    <!-- Bottom Row: Sensor Details, Sensor Status, and Recent Activities -->
+    <div class="bottom-row">
+      <!-- Sensor Details Section -->
+      <section id="sensor-details" class="glass">
+        <h2>Sensor Details</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Sensor ID</th>
+              <th>Name</th>
+              <th>Status</th>
+              <th>Rainfall (mm)</th>
+              <th>Forecasted Rainfall (mm)</th>
+              <th>Soil Saturation (%)</th>
+              <th>Slope (°)</th>
+              <th>Seismic Activity</th>
+              <th>Soil Type</th>
+              <th>Risk Level</th>
+              <th>Predicted Landslide Time</th>
+            </tr>
+          </thead>
+          <tbody id="sensor-table-body">
+            <!-- Sensor data will be populated here -->
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Sensor Status -->
+      <section class="chart">
+        <h2>Sensor Status</h2>
+        <canvas id="sensorStatusChart"></canvas>
+      </section>
+
+      <!-- Recent Activities -->
+      <section class="activity">
+        <h2>Recent Activities</h2>
+        <ul id="activity-list">
+          <!-- Activities will be loaded dynamically -->
+        </ul>
+      </section>
+    </div>
+  </div>
+{% endblock %}
+
+{% block jscontent %}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Make updateSensorCount globally accessible
+        window.updateSensorCount = async function() {
+            try {
+                const response = await fetch('/admin/get_sensors');
+                const sensors = await response.json();
+                const sensorCount = sensors.length;
+                
+                // Update the sensor count in the quick stats
+                const sensorStat = document.querySelector('.stat:nth-child(4) .value');
+                if (sensorStat) {
+                    sensorStat.textContent = sensorCount;
+                }
+            } catch (error) {
+                console.error('Error updating sensor count:', error);
+            }
+        };
+
+        // Function to update activity list
+        async function updateActivityList() {
+            try {
+                const response = await fetch('/admin/get_recent_activities');
+                const activities = await response.json();
+                const activityList = document.getElementById('activity-list');
+                
+                activityList.innerHTML = ''; // Clear existing items
+                
+                activities.forEach(activity => {
+                    const li = document.createElement('li');
+                    li.textContent = activity.action;
+                    activityList.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Error updating activity list:', error);
+            }
+        }
+
+        // Update activity list on page load and every 30 seconds
+        updateActivityList();
+        setInterval(updateActivityList, 30000);
+    </script>
+    <script src="{{ url_for('static', filename='js/admin/index.js') }}"></script>
+{% endblock %}

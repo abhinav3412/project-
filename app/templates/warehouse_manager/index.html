@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Warehouse Manager Dashboard{% endblock %}
+
+{% block csscontent %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/warehouse_manager/index.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="top-row">
+    <div class="warehouse-details">
+        <h2>Warehouse Details</h2>
+        <div class="details-grid">
+            <div class="detail-item">
+                <h3>Name</h3>
+                <p id="warehouse-name">Loading...</p>
+            </div>
+            <div class="detail-item">
+                <h3>Location</h3>
+                <p id="warehouse-location">Loading...</p>
+            </div>
+            <div class="detail-item">
+                <h3>Food Capacity</h3>
+                <p id="food-capacity">Loading...</p>
+            </div>
+            <div class="detail-item">
+                <h3>Water Capacity</h3>
+                <p id="water-capacity">Loading...</p>
+            </div>
+            <div class="detail-item">
+                <h3>Essentials Capacity</h3>
+                <p id="essentials-capacity">Loading...</p>
+            </div>
+            <div class="detail-item">
+                <h3>Clothes Capacity</h3>
+                <p id="clothes-capacity">Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="vehicle-management">
+        <h2>Vehicle Management</h2>
+          <!-- Logout Button -->
+  <a class="logout" href="{{ url_for('auth.logout') }}">Logout</a>
+  
+        <div class="add-vehicle">
+            <h3>Add New Vehicle</h3>
+            <form id="add-vehicle-form">
+                <div class="form-group">
+                    <label for="vehicle-id">Vehicle ID:</label>
+                    <input type="text" id="vehicle-id" required placeholder="Enter vehicle ID">
+                </div>
+                <div class="form-group">
+                    <label for="vehicle-capacity">Capacity (kg):</label>
+                    <input type="number" id="vehicle-capacity" required min="0" placeholder="Enter capacity">
+                </div>
+                <button type="submit" class="btn btn-primary">Add Vehicle</button>
+            </form>
+        </div>
+        
+        <div class="vehicles-list-container">
+            <h3>Available Vehicles</h3>
+            <ul id="vehicles-list" class="vehicles-list">
+                <!-- Vehicles will be populated here -->
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="resource-management">
+    <h2>Resource Management</h2>
+    <div class="resource-stats">
+        <div class="resource-chart">
+            <h3>Food</h3>
+            <div class="chart-container">
+                <canvas id="food-chart"></canvas>
+            </div>
+            <div class="resource-details">
+                <p>Available: <span id="food-stock">0</span></p>
+                <p>Used: <span id="food-used">0</span></p>
+            </div>
+        </div>
+        <div class="resource-chart">
+            <h3>Water</h3>
+            <div class="chart-container">
+                <canvas id="water-chart"></canvas>
+            </div>
+            <div class="resource-details">
+                <p>Available: <span id="water-stock">0</span></p>
+                <p>Used: <span id="water-used">0</span></p>
+            </div>
+        </div>
+        <div class="resource-chart">
+            <h3>Essentials</h3>
+            <div class="chart-container">
+                <canvas id="essentials-chart"></canvas>
+            </div>
+            <div class="resource-details">
+                <p>Available: <span id="essentials-stock">0</span></p>
+                <p>Used: <span id="essentials-used">0</span></p>
+            </div>
+        </div>
+        <div class="resource-chart">
+            <h3>Clothes</h3>
+            <div class="chart-container">
+                <canvas id="clothes-chart"></canvas>
+            </div>
+            <div class="resource-details">
+                <p>Available: <span id="clothes-stock">0</span></p>
+                <p>Used: <span id="clothes-used">0</span></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="update-resources">
+        <h3>Update Resources</h3>
+        <div class="resource-forms">
+            <form id="update-available-resources-form">
+                <h4>Update Available Resources</h4>
+                <div class="form-group">
+                    <label for="update-food-available">Food Quantity:</label>
+                    <input type="number" id="update-food-available" name="food" min="0" placeholder="Enter food quantity">
+                </div>
+                <div class="form-group">
+                    <label for="update-water-available">Water Quantity:</label>
+                    <input type="number" id="update-water-available" name="water" min="0" placeholder="Enter water quantity">
+                </div>
+                <div class="form-group">
+                    <label for="update-essentials-available">Essentials Quantity:</label>
+                    <input type="number" id="update-essentials-available" name="essentials" min="0" placeholder="Enter essentials quantity">
+                </div>
+                <div class="form-group">
+                    <label for="update-clothes-available">Clothes Quantity:</label>
+                    <input type="number" id="update-clothes-available" name="clothes" min="0" placeholder="Enter clothes quantity">
+                </div>
+                <button type="submit" class="btn btn-primary">Update Available Resources</button>
+            </form>
+
+            <form id="update-used-resources-form">
+                <h4>Update Used Resources</h4>
+                <div class="form-group">
+                    <label for="update-food-used">Food Quantity:</label>
+                    <input type="number" id="update-food-used" name="food" min="0" placeholder="Enter food quantity">
+                </div>
+                <div class="form-group">
+                    <label for="update-water-used">Water Quantity:</label>
+                    <input type="number" id="update-water-used" name="water" min="0" placeholder="Enter water quantity">
+                </div>
+                <div class="form-group">
+                    <label for="update-essentials-used">Essentials Quantity:</label>
+                    <input type="number" id="update-essentials-used" name="essentials" min="0" placeholder="Enter essentials quantity">
+                </div>
+                <div class="form-group">
+                    <label for="update-clothes-used">Clothes Quantity:</label>
+                    <input type="number" id="update-clothes-used" name="clothes" min="0" placeholder="Enter clothes quantity">
+                </div>
+                <button type="submit" class="btn btn-primary">Update Used Resources</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Resource Requests Section -->
+<section id="resource-requests">
+    <h2>Resource Requests</h2>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Camp Name</th>
+                    <th>Location</th>
+                    <th>Distance</th>
+                    <th>Food (kg)</th>
+                    <th>Water (L)</th>
+                    <th>Essentials</th>
+                    <th>Clothes</th>
+                    <th>Priority</th>
+                    <th>Requested At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="requests-table-body">
+                <!-- Requests will be populated here -->
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- Waiting Vehicles Section -->
+<section id="waiting-vehicles">
+    <div id="waiting-vehicles-container">
+        <!-- Waiting vehicles will be populated here -->
+    </div>
+</section>
+{% endblock %}
+
+{% block jscontent %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/warehouse_manager/index.js') }}"></script>
+{% endblock %}

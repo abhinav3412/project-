@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block csscontent %}
+<link rel="stylesheet" href="{{ url_for('static', filename='/css/user/guide.css')}}" >
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="container">
+    <!-- Top Row: Using the Website & Dealing with Landslides -->
+    <div class="top-row">
+        <!-- Section 1: Using the Website -->
+        <div class="guide-box" id="website-guide">
+            <h2>How to Use This Website</h2>
+            <p>Welcome to the Disaster Management System! Here's how you can use this platform effectively:</p>
+            <ul>
+                <li><strong>Alerts:</strong> Stay updated with real-time alerts about potential disasters.</li>
+                <li><strong>Map:</strong> View disaster-prone areas and relief camp locations.</li>
+                <li><strong>Sensors:</strong> Monitor environmental data from deployed sensors.</li>
+                <li><strong>Camps:</strong> Find information about nearby relief camps and resources.</li>
+                <li><strong>Forums:</strong> Engage with the community to share tips and experiences.</li>
+            </ul>
+        </div>
+
+        <!-- Section 2: Dealing with Landslides -->
+        <div class="guide-box" id="landslide-guide">
+            <h2>How to Deal with Landslides</h2>
+            <p>Landslides can be dangerous, but proper preparation and awareness can save lives. Follow these guidelines:</p>
+            <div class="checklist">
+                <h3>Preparation Checklist</h3>
+                <ul>
+                    <li>
+                        <label>
+                            <input type="checkbox" id="check1">
+                            Identify safe zones and evacuation routes in your area.
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox" id="check2">
+                            Keep emergency supplies (food, water, flashlight) ready.
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox" id="check3">
+                            Secure heavy furniture and objects that may fall during a landslide.
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox" id="check4">
+                            Stay informed about weather updates and warnings.
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox" id="check5">
+                            Create a family emergency plan and practice it regularly.
+                        </label>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Row: Dos and Don'ts -->
+    <div class="bottom-row">
+        <!-- Section 3: Dos During a Landslide -->
+        <div class="guide-box dos">
+            <h2>Do's During a Landslide</h2>
+            <ul>
+                <li>Move to higher ground immediately if you suspect a landslide.</li>
+                <li>Listen to local authorities and follow their instructions.</li>
+                <li>Stay alert for unusual sounds like cracking trees or rumbling earth.</li>
+            </ul>
+        </div>
+
+        <!-- Section 4: Don'ts During a Landslide -->
+        <div class="guide-box donts">
+            <h2>Don'ts During a Landslide</h2>
+            <ul>
+                <li>Do not stay near steep slopes or unstable terrain.</li>
+                <li>Do not attempt to drive through flooded or debris-filled roads.</li>
+                <li>Do not return to the affected area until it is declared safe.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block jscontent %}
+    <script src="{{ url_for('static', filename='/js/user/guide.js')}}"></script>
+{% endblock %}

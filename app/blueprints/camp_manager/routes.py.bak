@@ -1,0 +1,617 @@
+from flask import jsonify, render_template, request
+from . import camp_manager_bp
+from flask_login import current_user, login_required
+from app.db_manager import CampManager, CampNotFound
+from app.resource_allocation import (
+    allocate_resources,
+    calculate_road_distance_and_duration,
+    format_eta
+)
+from app.models import Camp, Vehicle, UserRequest, ResourceRequest
+from app import db
+from datetime import datetime, timedelta
+import os
+import json
+from flask import flash
+
+@camp_manager_bp.route('/')
+@login_required
+def index():
+    # Get the camp managed by the current user
+    camp = Camp.query.filter_by(camp_head_id=current_user.uid).first()
+    if not camp:
+        return render_template('camp_manager/no_camp.html')
+    
+    return render_template('camp_manager/index.html', camp=camp)
+
+@camp_manager_bp.route('/get_people', methods=['GET'])
+@login_required
+def get_people():
+    """Get all people in the camp managed by the current camp manager."""
+    try:
+        # Get the camp managed by the current camp manager
+        camp = Camp.query.filter_by(camp_head_id=current_user.uid).first()
+        if not camp:
+            return jsonify({"error": "No camp assigned"}), 404
+        
+        # Get the people list from the camp
+        people_list = camp.people_list or []
+        
+        # Ensure the people list matches the current occupancy
+        if len(people_list) != camp.current_occupancy:
+            # If there's a mismatch, we need to rebuild the list
+            # First, keep track of manually added people (those not from requests)
+            manually_added = []
+            for person in people_list:
+                # Check if this person is from a request (has a number in parentheses)
+                if not '(' in person['name'] or not ')' in person['name']:
+                    manually_added.append(person)
+            
+            # Get all approved requests for this camp
+            approved_requests = UserRequest.query.filter_by(
+                camp_id=camp.cid,
+                status='Approved'
+            ).all()
+            
+            # Rebuild the people list from approved requests
+            people_list = []
+            for request in approved_requests:
+                for i in range(request.number_slots):
+                    person = {
+                        'name': f"{request.name} ({i+1})",
+                        'phone': request.phone,
+                        'entry_date': request.created_at.strftime('%Y-%m-%d %H:%M:%S')
+                    }
+                    people_list.append(person)
+            
+            # Add back the manually added people
+            people_list.extend(manually_added)
+            
+            # Update the camp's people list
+            camp.people_list = people_list
+            db.session.commit()
+        
+        # Return the list of people
+        return jsonify(people_list)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@camp_manager_bp.route('/get_camp_details')
+@login_required
+def get_camp_details():
+    # Get the camp managed by the current camp manager
+    camp = Camp.query.filter_by(camp_head_id=current_user.uid).first()
+    if not camp:
+        return jsonify({"error": "No camp assigned"}), 404
+        
+    try:
+        data = CampManager.get_camp_data(camp.cid)
+        return jsonify(data)
+    except CampNotFound as e:
+        return jsonify({"error": str(e)}), 404
+    except Exception as e:
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
+
+@camp_manager_bp.route('/request_resources', methods=['POST'])
+@login_required
+def request_resources():
+    try:
+        # Get the camp managed by the current camp manager
+        camp = Camp.query.filter_by(camp_head_id=current_user.uid).first()
+        if not camp:
+            return jsonify({
+                'success': False,
+                'message': 'No camp assigned'
+            }), 404
+            
+        data = request.get_json()
+        
+        # Validate required fields
+        if not data or 'items' not in data:
+            return jsonify({
+                'success': False,
+                'message': 'Missing required fields'
+            }), 400
+            
+        # Allocate resources
+        result = allocate_resources(
+            camp_id=camp.cid,
+            required_items=data['items'],
+            priority=data.get('priority', 'general')
+        )
+        
+        if result['success']:
+            # Get vehicle details
+            vehicle = Vehicle.query.get(result['vehicle_id'])
+            
+            return jsonify({
+                'success': True,
+                'message': result['message'],
+                'data': {
+                    'warehouse': result['warehouse'],
+                    'vehicle_id': result['vehicle_id'],
+                    'vehicle_capacity': vehicle.capacity,
+                    'eta': result['eta'],
+                    'items': result['items']
+                }
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'message': result['message']
+            }), 400
+            
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'Error requesting resources: {str(e)}'
+        }), 500
+
+@camp_manager_bp.route('/get_delivery_status')
+@login_required
+def get_delivery_status():
+    try:
+        # Get the camp managed by the current camp manager
+        camp = Camp.query.filter_by(camp_head_id=current_user.uid).first()
+        if not camp:
+            return jsonify({"success": False, "error": "No camp assigned"}), 404
+        
+        # Get resource requests for this camp that are in transit
+        resource_requests = ResourceRequest.query.filter_by(
+            camp_id=camp.cid,
+            status='in_transit'
+        ).all()
+        
+        delivery_status = []
+        for request in resource_requests:
+            if request.vehicle and request.warehouse:
+                # Get vehicle's current location (in a real system, this would come from GPS)
+                # For now, we'll use the warehouse location
+                warehouse = request.warehouse
+                current_location = (warehouse.coordinates_lat, warehouse.coordinates_lng)
+                camp_location = (camp.coordinates_lat, camp.coordinates_lng)
+                
+                # Calculate ETA
+                _, duration = calculate_road_distance_and_duration(current_location, camp_location)
+                if duration:
+                    eta = datetime.now() + timedelta(seconds=duration)
+                    formatted_eta = format_eta(duration)
+                    
+                    delivery_status.append({
+                        'request_id': request.id,
+                        'vehicle_id': request.vehicle.vid,
+                        'warehouse': warehouse.name,
+                        'eta': formatted_eta,
+                        'status': request.status
+                    })
+        
+        return jsonify({
+            'success': True,
+            'deliveries': delivery_status
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'Error getting delivery status: {str(e)}'
+        }), 500
+
+@camp_manager_bp.route('/send_resource_request', methods=['POST'])
+@login_required
+def send_resource_request():
+    """Send a resource request from a camp to the nearest warehouse."""
+    try:
+        # Get the camp managed by the current camp manager
+        camp = Camp.query.filter_by(camp_head_id=current_user.uid).first()
+        if not camp:
+            return jsonify({"success": False, "error": "No camp assigned"}), 404
+        
+        # Get request data
+        data = request.get_json()
+        if not data:
+            return jsonify({"success": False, "error": "No data provided"}), 400
+            
+        food_quantity = data.get('food', 0)
+        water_quantity = data.get('water', 0)
+        essentials_quantity = data.get('essentials', 0)
+        clothes_quantity = data.get('clothes', 0)
+        priority = data.get('priority', 'general')
+        
+        # Validate request
+        if food_quantity == 0 and water_quantity == 0 and essentials_quantity == 0 and clothes_quantity == 0:
+            return jsonify({"success": False, "error": "At least one resource must be requested"}), 400
+            
+        # Validate quantities are non-negative
+        if any(q < 0 for q in [food_quantity, water_quantity, essentials_quantity, clothes_quantity]):
+            return jsonify({"success": False, "error": "Resource quantities cannot be negative"}), 400
+        
+        # Create a new resource request
+        resource_request = ResourceRequest(
+            camp_id=camp.cid,
+            food_quantity=food_quantity,
+            water_quantity=water_quantity,
+            essentials_quantity=essentials_quantity,
+            clothes_quantity=clothes_quantity,
+            priority=priority,
+            status='pending'
+        )
+        
+        # Save the request
+        db.session.add(resource_request)
+        db.session.commit()
+        
+        return jsonify({
+            "success": True,
+            "message": "Resource request sent successfully",
+            "request_id": resource_request.id
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@camp_manager_bp.route('/get_user_requests')
+@login_required
+def get_user_requests():
+    """Get all user requests for the camp managed by the current camp manager."""
+    try:
+        # Get the camp managed by the current camp manager
+        camp = Camp.query.filter_by(camp_head_id=current_user.uid).first()
+        if not camp:
+            return jsonify({"error": "No camp assigned"}), 404
+            
+        # Get all requests for this camp
+        requests = UserRequest.query.filter_by(camp_id=camp.cid).order_by(UserRequest.created_at.desc()).all()
+        
+        # Format the requests for JSON response
+        requests_list = [{
+            'id': req.id,
+            'name': req.name,
+            'phone': req.phone,
+            'number_slots': req.number_slots,
+            'priority': req.priority,
+            'status': req.status,
+            'created_at': req.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        } for req in requests]
+        
+        return jsonify(requests_list)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@camp_manager_bp.route('/update_request_status', methods=['POST'])
+@login_required
+def update_request_status():
+    """Update the status of a user request."""
+    try:
+        data = request.get_json()
+        request_id = data.get('request_id')
+        status = data.get('status')
+        
+        if not request_id or not status:
+            return jsonify({"success": False, "error": "Missing request_id or status"}), 400
+            
+        # Get the request
+        user_request = UserRequest.query.get_or_404(request_id)
+        
+        # Verify the request belongs to the camp managed by the current user
+        camp = Camp.query.filter_by(camp_head_id=current_user.uid).first()
+        if not camp or user_request.camp_id != camp.cid:
+            return jsonify({"success": False, "error": "Unauthorized"}), 403
+            
+        # Update the request status
+        user_request.status = status
+        if status == 'Approved':
+            # Update camp occupancy
+            camp.current_occupancy += user_request.number_slots
+            
+            # Get current people list
+            people_list = camp.people_list or []
+            
+            # Add new people to the list, checking for duplicates
+            for i in range(user_request.number_slots):
+                new_person = {
+                    'name': f"{user_request.name} ({i+1})",
+                    'phone': user_request.phone,
+                    'entry_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                }
+                
+                # Check if person already exists
+                is_duplicate = any(
+                    person['name'] == new_person['name'] and 
+                    person['phone'] == new_person['phone']
+                    for person in people_list
+                )
+                
+                if not is_duplicate:
+                    people_list.append(new_person)
+            
+            # Update camp's people list
+            camp.people_list = people_list
+            
+        db.session.commit()
+        
+        return jsonify({
+            "success": True,
+            "message": "Request status updated successfully",
+            "data": {
+                "request_id": request_id,
+                "status": status,
+                "people_added": user_request.number_slots if status == 'Approved' else 0
+            }
+        })
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@camp_manager_bp.route('/resources')
+@login_required
+def resources():
+    try:
+        # Get the camp managed by the current user
+        camp = Camp.query.filter_by(camp_head_id=current_user.uid).first()
+        if not camp:
+            return render_template('camp_manager/no_camp.html')
+            
+        # Load resource data from JSON file
+        try:
+            with open(os.path.join('app', 'static', 'data', 'resources.json'), 'r') as f:
+                resources = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            resources = []
+        
+        return render_template('camp_manager/resources.html', resources=resources, camp=camp)
+    except Exception as e:
+        flash(f"Error loading resources: {str(e)}", "error")
+        return render_template('camp_manager/resources.html', resources=[], camp=None)
+
+@camp_manager_bp.route('/add_resource', methods=['POST'])
+@login_required
+def add_resource():
+    try:
+        # Get the camp managed by the current user
+        camp = Camp.query.filter_by(camp_head_id=current_user.uid).first()
+        if not camp:
+            return jsonify({'success': False, 'message': 'No camp assigned'})
+            
+        data = request.get_json()
+        resource_type = data.get('resource_type')
+        capacity = int(data.get('capacity'))
+        current_stock = int(data.get('current_stock'))
+        
+        if not all([resource_type, capacity, current_stock]):
+            return jsonify({'success': False, 'message': 'All fields are required'})
+        
+        if current_stock > capacity:
+            return jsonify({'success': False, 'message': 'Current stock cannot exceed capacity'})
+        
+        # Load existing resources
+        try:
+            with open(os.path.join('app', 'static', 'data', 'resources.json'), 'r') as f:
+                resources = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            resources = []
+        
+        # Generate new resource ID
+        new_id = len(resources) + 1
+        
+        # Create new resource
+        new_resource = {
+            'id': new_id,
+            'type': resource_type,
+            'capacity': capacity,
+            'current_stock': current_stock,
+            'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'camp_id': camp.cid
+        }
+        
+        # Add new resource
+        resources.append(new_resource)
+        
+        # Save updated resources
+        with open(os.path.join('app', 'static', 'data', 'resources.json'), 'w') as f:
+            json.dump(resources, f, indent=4)
+        
+        return jsonify({'success': True, 'message': 'Resource added successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+@camp_manager_bp.route('/update_resource/<int:resource_id>', methods=['POST'])
+@login_required
+def update_resource(resource_id):
+    try:
+        # Get the camp managed by the current user
+        camp = Camp.query.filter_by(camp_head_id=current_user.uid).first()
+        if not camp:
+            return jsonify({'success': False, 'message': 'No camp assigned'})
+            
+        data = request.get_json()
+        capacity = int(data.get('capacity'))
+        current_stock = int(data.get('current_stock'))
+        
+        if not all([capacity, current_stock]):
+            return jsonify({'success': False, 'message': 'All fields are required'})
+        
+        if current_stock > capacity:
+            return jsonify({'success': False, 'message': 'Current stock cannot exceed capacity'})
+        
+        # Load existing resources
+        try:
+            with open(os.path.join('app', 'static', 'data', 'resources.json'), 'r') as f:
+                resources = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            return jsonify({'success': False, 'message': 'No resources found'})
+        
+        # Find and update the resource
+        for resource in resources:
+            if resource['id'] == resource_id and resource['camp_id'] == camp.cid:
+                resource['capacity'] = capacity
+                resource['current_stock'] = current_stock
+                resource['last_updated'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                break
+        
+        # Save updated resources
+        with open(os.path.join('app', 'static', 'data', 'resources.json'), 'w') as f:
+            json.dump(resources, f, indent=4)
+        
+        return jsonify({'success': True, 'message': 'Resource updated successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+@camp_manager_bp.route('/delete_resource/<int:resource_id>', methods=['POST'])
+@login_required
+def delete_resource(resource_id):
+    try:
+        # Get the camp managed by the current user
+        camp = Camp.query.filter_by(camp_head_id=current_user.uid).first()
+        if not camp:
+            return jsonify({'success': False, 'message': 'No camp assigned'})
+            
+        # Load existing resources
+        try:
+            with open(os.path.join('app', 'static', 'data', 'resources.json'), 'r') as f:
+                resources = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            return jsonify({'success': False, 'message': 'No resources found'})
+        
+        # Remove the resource
+        resources = [r for r in resources if r['id'] != resource_id or r['camp_id'] != camp.cid]
+        
+        # Save updated resources
+        with open(os.path.join('app', 'static', 'data', 'resources.json'), 'w') as f:
+            json.dump(resources, f, indent=4)
+        
+        return jsonify({'success': True, 'message': 'Resource deleted successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+@camp_manager_bp.route('/add_person', methods=['POST'])
+@login_required
+def add_person():
+    """Add a person manually to the camp."""
+    try:
+        data = request.get_json()
+        name = data.get('name')
+        phone = data.get('phone')
+        
+        if not name or not phone:
+            return jsonify({
+                "success": False,
+                "error": "Name and phone number are required"
+            }), 400
+            
+        # Get the camp managed by the current camp manager
+        camp = Camp.query.filter_by(camp_head_id=current_user.uid).first()
+        if not camp:
+            return jsonify({
+                "success": False,
+                "error": "No camp assigned"
+            }), 404
+            
+        # Check if camp is at capacity
+        if camp.current_occupancy >= camp.capacity:
+            return jsonify({
+                "success": False,
+                "error": "Camp is at full capacity"
+            }), 400
+            
+        # Get current people list
+        people_list = camp.people_list or []
+        
+        # Add new person
+        new_person = {
+            'name': name,
+            'phone': phone,
+            'entry_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        
+        # Check for duplicates
+        is_duplicate = any(
+            person['name'] == name and 
+            person['phone'] == phone
+            for person in people_list
+        )
+        
+        if is_duplicate:
+            return jsonify({
+                "success": False,
+                "error": "Person already exists in camp"
+            }), 400
+            
+        # Add person to list
+        people_list.append(new_person)
+        
+        # Update camp
+        camp.people_list = people_list
+        camp.current_occupancy += 1
+        
+        db.session.commit()
+        
+        return jsonify({
+            "success": True,
+            "message": "Person added successfully"
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
+
+@camp_manager_bp.route('/remove_people', methods=['POST'])
+@login_required
+def remove_people():
+    """Remove selected people from the camp."""
+    try:
+        data = request.get_json()
+        people_to_remove = data.get('people', [])
+        
+        if not people_to_remove:
+            return jsonify({
+                "success": False,
+                "error": "No people selected for removal"
+            }), 400
+            
+        # Get the camp managed by the current camp manager
+        camp = Camp.query.filter_by(camp_head_id=current_user.uid).first()
+        if not camp:
+            return jsonify({
+                "success": False,
+                "error": "No camp assigned"
+            }), 404
+            
+        # Get current people list
+        people_list = camp.people_list or []
+        
+        # Count how many people will be removed
+        removed_count = 0
+        
+        # Create a new list without the people to remove
+        new_people_list = []
+        for person in people_list:
+            # Check if this person should be removed
+            should_remove = False
+            for person_to_remove in people_to_remove:
+                if (person['name'] == person_to_remove['name'] and 
+                    person['phone'] == person_to_remove['phone']):
+                    should_remove = True
+                    removed_count += 1
+                    break
+            
+            if not should_remove:
+                new_people_list.append(person)
+        
+        # Update camp
+        camp.people_list = new_people_list
+        camp.current_occupancy -= removed_count
+        
+        db.session.commit()
+        
+        return jsonify({
+            "success": True,
+            "message": f"{removed_count} person(s) removed successfully"
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500

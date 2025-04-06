@@ -1,0 +1,123 @@
+{% extends "admin/base.html" %}
+
+{% block csscontent%}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/admin/camp.css')}}">
+{% endblock %}
+
+{% block content %}
+<div class="camp-management-container">
+    <div class="camp-management-box">
+        <div class="camp-header">
+            <h2>Camp Management</h2>
+            <button id="add-camp-btn" class="btn btn-primary">Add New Camp</button>
+        </div>
+
+        <!-- Search and Filter Section -->
+        <div class="search-filter-section">
+            <input type="text" id="search-name" placeholder="Search by name...">
+            <input type="text" id="search-location" placeholder="Search by location...">
+        </div>
+
+        <!-- Camp List Table -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Capacity</th>
+                        <th>Current Occupancy</th>
+                        <th>Food Capacity</th>
+                        <th>Water Capacity</th>
+                        <th>Essentials Capacity</th>
+                        <th>Clothes Capacity</th>
+                        <th>Status</th>
+                        <th>Camp Manager</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="camp-list">
+                    <!-- Camp data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Camp Modal -->
+<div id="camp-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Add Camp</h2>
+        <form id="camp-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location:</label>
+                    <input type="text" id="location" name="location" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="capacity">People Capacity:</label>
+                    <input type="number" id="capacity" name="capacity" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="coordinates_lat">Latitude:</label>
+                    <input type="number" step="any" id="coordinates_lat" name="coordinates_lat" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="coordinates_lng">Longitude:</label>
+                    <input type="number" step="any" id="coordinates_lng" name="coordinates_lng" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="food_capacity">Food Capacity (kg):</label>
+                    <input type="number" id="food_capacity" name="food_capacity" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="water_capacity">Water Capacity (L):</label>
+                    <input type="number" id="water_capacity" name="water_capacity" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="essentials_capacity">Essentials Capacity (kits):</label>
+                    <input type="number" id="essentials_capacity" name="essentials_capacity" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="clothes_capacity">Clothes Capacity (sets):</label>
+                    <input type="number" id="clothes_capacity" name="clothes_capacity" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="contact_number">Contact Number:</label>
+                    <input type="tel" id="contact_number" name="contact_number">
+                </div>
+
+                <div class="form-group">
+                    <label for="camp_head">Camp Head:</label>
+                    <select id="camp_head" name="camp_head">
+                        <option value="">Select a camp head</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block jscontent %}
+<script src="{{ url_for('static', filename='js/admin/camp.js') }}"></script>
+{% endblock %} 

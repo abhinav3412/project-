@@ -1,0 +1,271 @@
+/* Forum Container */
+.forum-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 2vh auto;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 1.5vh 2vw; /* Slightly reduced padding */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 3vh; /* Slightly reduced gap between rows */
+    animation: slideInFromTop 1s ease-in-out;
+}
+
+.top-row, .bottom-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 2vw; /* Slightly reduced gap between boxes */
+    animation: fadeIn 1s ease-in-out;
+    height: 100%;
+    max-height: 350px;
+}
+
+.box {
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Frosted glass effect */
+    -webkit-backdrop-filter: blur(10px); /* For Safari compatibility */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border for contrast */
+    padding: 1.5vh 2vw; /* Slightly reduced padding */
+    border-radius: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4vh; /* Slightly reduced gap between elements inside the box */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Optional shadow for depth */
+    transition: all 0.3s ease;
+}
+.box:hover {
+    transform: translateY(-1vh); /* Lift effect on hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Enhanced shadow */
+}
+
+.faq-section h2, .ask-question h2, .feedback-section h2, .threads h2 {
+    font-size: 1.6rem; /* Slightly reduced font size */
+    margin-bottom: 0.8vh; /* Slightly reduced margin */
+    color: #a2fd65;
+    transition: color 0.3s ease;
+}
+.faq-section h2:hover, .ask-question h2:hover, .feedback-section h2:hover, .threads h2:hover {
+    color: #ffdd57; /* Brighten heading on hover */
+}
+
+/* FAQ Styles */
+.faq-item {
+    color: #fff;
+    margin-bottom: 0.8vh; /* Slightly reduced margin */
+    transition: transform 0.3s ease;
+}
+.faq-item:hover {
+    transform: translateX(10px); /* Slide effect on hover */
+}
+.faq-question {
+    background: linear-gradient(to right, #003564, #337429);
+    color: white;
+    border: none;
+    padding: 2vh 1.5vw; /* Slightly reduced padding */
+    font-size: 0.9rem; /* Slightly reduced font size */
+    border-radius: 15px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    transition: background 0.3s ease;
+    opacity: 0.9;
+}
+.faq-question:hover {
+    background: #005bb5; /* Darker blue on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+.faq-answer {
+    display: none;
+    margin-top: 0.5vh;
+    padding: 1vh 1.5vw; /* Slightly reduced padding */
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    font-size: 0.9rem; /* Slightly reduced font size */
+}
+
+/* Ask a Question Styles */
+.ask-question form, .feedback-section form {
+    display: flex;
+    color: #fff;
+    flex-direction: column;
+    gap: 0.8vh; /* Slightly reduced gap */
+}
+.ask-question label, .feedback-section label {
+    font-size: 0.9rem; /* Slightly reduced font size */
+    transition: color 0.3s ease;
+}
+.ask-question label:hover, .feedback-section label:hover {
+    color: #ffdd57; /* Brighten label on hover */
+}
+.ask-question input, .ask-question textarea, .feedback-section input, .feedback-section textarea {
+    padding: 0.6vh 1vw; /* Slightly reduced padding */
+    font-size: 0.9rem; /* Slightly reduced font size */
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: beige;
+    transition: background 0.3s ease;
+}
+.ask-question input:hover, .ask-question textarea:hover, .feedback-section input:hover, .feedback-section textarea:hover {
+    background: rgba(255, 255, 255, 0.2); /* Brighten input/textarea on hover */
+}
+.ask-question button, .feedback-section button {
+    padding: 0.8vh 1.5vw; /* Slightly reduced padding */
+    font-size: 0.9rem; /* Slightly reduced font size */
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.ask-question button:hover, .feedback-section button:hover {
+    background: #005bb5; /* Darker blue on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Threads Section */
+.threads-container {
+    max-height: 300px; /* Fixed height for scrollable area */
+    overflow-y: auto; /* Enable vertical scrolling */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Optional: Add border for clarity */
+    border-radius: 15px;
+    color: #fff;
+    margin-bottom: 2vh; /* Space below the container */
+}
+
+
+/* Forum Threads */
+.thread-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+}
+
+.thread-item {
+    border: 3px solid rgba(198, 225, 80, 0.648); /* Subtle border for definition */
+    border-radius: 5px;
+    padding: 2vh 1.5vw;
+    margin-left: -5%;
+    margin-right: 5%;
+    margin-bottom: 3%;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.thread-header {
+    display: flex;
+    margin-top: 20px;
+    justify-content: space-between;
+    margin-bottom: 0.5vh;
+    transition: transform 0.3s ease;
+    
+}
+
+.thread-header:hover {
+    transform: translateX(5px);
+}
+
+.thread-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.thread-title:hover {
+    color: #ffdd57;
+}
+
+.thread-body {
+    margin-bottom: 0.8vh;
+    font-size: 0.9rem;
+    transition: opacity 0.3s ease;
+}
+
+.thread-body:hover {
+    opacity: 0.8;
+}
+
+.replies {
+    margin-left: 20px;
+    padding-left: 10px;
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.reply {
+    margin-top: 5px;
+    font-size: 0.9rem;
+}
+
+/* Reply Button */
+.reply-button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 0.8vh 2vw;
+    font-size: 0.9rem;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 1vh;
+    transition: all 0.3s ease;
+}
+
+.reply-button:hover {
+    background: #005bb5;
+    transform: scale(1.05);
+}
+.toggle-replies-btn{
+    background: #8ced58fc;
+    color: rgb(11, 11, 11);
+    border: none;
+    padding: 0.8vh 2vw;
+    font-size: 0.9rem;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 1vh;
+    transition: all 0.3s ease;
+}
+.toggle-replies-btn:hover {
+    background: #6feb2db4;
+    transform: scale(1.05);
+}
+.reply-content{
+    border-radius: 6px;
+    margin-top: 1vh;
+
+}
+.reply-form button{
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 0.8vh 2vw;
+    font-size: 0.9rem;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 1vh;
+    transition: all 0.3s ease;
+}
+/* Animations */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInFromTop {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

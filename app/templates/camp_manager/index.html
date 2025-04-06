@@ -1,0 +1,282 @@
+{% extends 'base.html' %}
+
+{% block csscontent %}
+<link rel="stylesheet" href="{{ url_for('static', filename='/css/camp_manager/index.css')}}" >
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+    .chart-container {
+        position: relative;
+        height: 200px;
+        width: 100%;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 10px;
+    }
+    .resource-chart {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 15px;
+        margin: 10px;
+        text-align: center;
+    }
+    .resource-chart h3 {
+        color: #fff;
+        margin-bottom: 10px;
+    }
+    .resource-details {
+        margin-top: 10px;
+        color: #fff;
+    }
+    .resources-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<body>
+  <!-- Add camp data as a data attribute -->
+  <div id="camp-data" 
+       data-food-stock="{{ camp.food_stock or 0 }}"
+       data-food-capacity="{{ camp.food_capacity or 0 }}"
+       data-water-stock="{{ camp.water_stock or 0 }}"
+       data-water-capacity="{{ camp.water_capacity or 0 }}"
+       data-clothes-stock="{{ camp.clothes_stock or 0 }}"
+       data-clothes-capacity="{{ camp.clothes_capacity or 0 }}"
+       data-essentials-stock="{{ camp.essentials_stock or 0 }}"
+       data-essential-capacity="{{ camp.essential_capacity or 0 }}"
+       data-current-occupancy="{{ camp.current_occupancy }}"
+       data-capacity="{{ camp.capacity }}"
+       style="display: none;">
+  </div>
+
+  <!-- Heading with Typewriter Effect -->
+  <div class="heading">
+    <span class="static-text">Welcome Camp Head . </span>
+    <span class="typewriter-text"></span>
+  </div>
+  <!-- Logout Button -->
+  <a class="logout" href="{{ url_for('auth.logout') }}">Logout</a>
+
+  <!-- First Row -->
+  <div class="row">
+    <!-- Box 1: List of People in Camp -->
+    <div class="box">
+      <h2>People in Camp</h2>
+      <div class="search-container">
+        <input type="text" id="filter" placeholder="Filter by name...">
+        <i class="fas fa-search"></i>
+      </div>
+      <div class="people-list-container">
+        <ul id="people-list">
+          <!-- Data will be populated by JavaScript -->
+        </ul>
+      </div>
+    </div>
+
+    <!-- Box 2: Food and Water Resources -->
+    <div class="box resources-box">
+      <h2>Resources Overview</h2>
+      <div class="resources-grid">
+        <!-- Food Chart -->
+        <div class="resource-chart">
+          <h3>Food</h3>
+          <div class="chart-container">
+            <canvas id="food-chart" width="200" height="200"></canvas>
+          </div>
+          <div class="resource-details">
+            <p><strong>Current Stock:</strong> <span id="food-stock">0</span> kg</p>
+            <p><strong>Used:</strong> <span id="food-used">0</span> kg</p>
+            <div class="resource-buttons">
+              <button class="update-stock-btn" data-resource="food">Update Stock</button>
+              <button class="update-used-btn" data-resource="food">Update Used</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Water Chart -->
+        <div class="resource-chart">
+          <h3>Water</h3>
+          <div class="chart-container">
+            <canvas id="water-chart" width="200" height="200"></canvas>
+          </div>
+          <div class="resource-details">
+            <p><strong>Current Stock:</strong> <span id="water-stock">0</span> L</p>
+            <p><strong>Used:</strong> <span id="water-used">0</span> L</p>
+            <div class="resource-buttons">
+              <button class="update-stock-btn" data-resource="water">Update Stock</button>
+              <button class="update-used-btn" data-resource="water">Update Used</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Box 3: Camp Details -->
+    <div class="box">
+      <h2>Camp Details</h2>
+      <div class="camp-info">
+        <p><strong>Camp Name:</strong> <span id="camp-name">{{ camp.name }}</span></p>
+        <p><strong>Location:</strong> <span id="camp-location">{{ camp.location }}</span></p>
+        <p><strong>Capacity:</strong> <span id="camp-capacity">{{ camp.capacity }}</span></p>
+        <p><strong>Current Occupancy:</strong> <span id="current-occupancy">{{ camp.current_occupancy }}</span></p>
+        <p><strong>Phone:</strong> <span id="camp-phone">{{ camp.phone }}</span></p>
+        
+        <!-- Resource Capacities -->
+        <div class="resource-capacities">
+          <h3>Resource Capacities</h3>
+          <p><strong>Food Capacity:</strong> <span id="food-capacity-detail">{{ camp.food_capacity }}</span> </p>
+          <p><strong>Water Capacity:</strong> <span id="water-capacity-detail">{{ camp.water_capacity }}</span> </p>
+          <p><strong>Essentials Capacity:</strong> <span id="essentials-capacity-detail">{{ camp.essentials_capacity }}</span> </p>
+          <p><strong>Clothes Capacity:</strong> <span id="clothes-capacity-detail">{{ camp.clothes_capacity }}</span> </p>
+        </div>
+        
+        <button id="add-person-btn" class="add-person-btn">Add Person Manually</button>
+        <button id="remove-person-btn" class="remove-person-btn">Remove Person</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Second Row -->
+  <div class="row">
+    <!-- Box 1: User Requests -->
+    <div class="box">
+      <h2>User Requests</h2>
+      <div class="scrollable">
+        <ul id="requests-list">
+          <!-- User requests will be populated by JavaScript -->
+        </ul>
+      </div>
+    </div>
+
+    <!-- Box 2: Clothes and Essentials Resources -->
+    <div class="box resources-box">
+      <h2>Resources Overview</h2>
+      <div class="resources-grid">
+        <!-- Clothes Chart -->
+        <div class="resource-chart">
+          <h3>Clothes</h3>
+          <div class="chart-container">
+            <canvas id="clothes-chart" width="200" height="200"></canvas>
+          </div>
+          <div class="resource-details">
+            <p><strong>Current Stock:</strong> <span id="clothes-stock">0</span> sets</p>
+            <p><strong>Used:</strong> <span id="clothes-used">0</span> sets</p>
+            <div class="resource-buttons">
+              <button class="update-stock-btn" data-resource="clothes">Update Stock</button>
+              <button class="update-used-btn" data-resource="clothes">Update Used</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Essentials Chart -->
+        <div class="resource-chart">
+          <h3>Essentials</h3>
+          <div class="chart-container">
+            <canvas id="essentials-chart" width="200" height="200"></canvas>
+          </div>
+          <div class="resource-details">
+            <p><strong>Current Stock:</strong> <span id="essentials-stock">0</span> kits</p>
+            <p><strong>Used:</strong> <span id="essentials-used">0</span> kits</p>
+            <div class="resource-buttons">
+              <button class="update-stock-btn" data-resource="essentials">Update Stock</button>
+              <button class="update-used-btn" data-resource="essentials">Update Used</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Box 3: Request Supplies -->
+    <div class="box">
+      <h2>Request Supplies</h2>
+      <div id="supply-form">
+        <label for="food">Food (kg):</label>
+        <input type="number" id="food" placeholder="Enter amount...">
+        <label for="water">Water (L):</label>
+        <input type="number" id="water" placeholder="Enter amount...">
+        <label for="essentials">Essentials (kits):</label>
+        <input type="number" id="essentials" placeholder="Enter amount...">
+        <label for="clothes">Clothes (sets):</label>
+        <input type="number" id="clothes" placeholder="Enter amount...">
+        <div class="emergency-checkbox">
+          <input type="checkbox" id="emergency" name="emergency">
+          <label for="emergency">Emergency Request</label>
+        </div>
+        <button id="send-supply-request">Send Request</button>
+      </div>
+      <div id="delivery-status" class="delivery-status" style="display: none;">
+        <h3>Delivery Status</h3>
+        <div class="status-details">
+          <p><strong>Warehouse:</strong> <span id="warehouse-name">-</span></p>
+          <p><strong>Vehicle ID:</strong> <span id="vehicle-id">-</span></p>
+          <p><strong>ETA:</strong> <span id="delivery-eta">-</span></p>
+          <p><strong>Status:</strong> <span id="delivery-status-text">-</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Person Modal -->
+  <div id="add-person-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Add Person to Camp</h2>
+      <form id="add-person-form">
+        <div class="form-group">
+          <label for="person-name">Name:</label>
+          <input type="text" id="person-name" required>
+        </div>
+        <div class="form-group">
+          <label for="person-phone">Phone:</label>
+          <input type="text" id="person-phone" required>
+        </div>
+        <button type="submit" class="submit-btn">Add Person</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Remove Person Modal -->
+  <div id="remove-person-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Remove Person from Camp</h2>
+      <div class="remove-people-container">
+        <div id="remove-people-list" class="remove-people-list">
+          <!-- People will be loaded here dynamically -->
+        </div>
+      </div>
+      <button id="remove-selected-btn" class="submit-btn">Remove Selected</button>
+    </div>
+  </div>
+
+  <!-- Update Resource Modal -->
+  <div id="update-resource-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Update Resource</h2>
+      <form id="update-resource-form">
+        <input type="hidden" id="resource-type">
+        <input type="hidden" id="update-type">
+        <div class="form-group">
+          <label for="resource-value-input">Value:</label>
+          <input type="number" id="resource-value-input" min="0" required>
+        </div>
+        <button type="submit" class="submit-btn">Update</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Include Delivery Popup -->
+  {% include 'camp_manager/delivery_popup.html' %}
+</body>
+{% endblock %}
+
+{% block jscontent %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+<script src="{{ url_for('static', filename='js/camp_manager/index.js')}}"></script>
+{% endblock %}

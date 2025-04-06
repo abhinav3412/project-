@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block csscontent %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user/camps.css') }}">
+{% endblock %}
+{% block content %}
+<div class="camps-page" id="camp-page">
+    <!-- Left Column: Camp Details and Charts -->
+    <div class="left-column">
+        <!-- Camp Details Section -->
+        <div class="camp-details">
+            <h2>Relief Camp Details</h2>
+            <div class="camp-info">
+                <p><strong>Camp ID:</strong> <span id="camp-id">001</span></p>
+                <p><strong>Location:</strong> <span id="camp-location">City A</span></p>
+                <p><strong>Status:</strong> <span id="camp-status">Operational</span></p>
+                <p><strong>Capacity:</strong> <span id="camp-capacity">500 people</span></p>
+                <p><strong>Food Remaining:</strong> <span id="camp-food">2000 meals</span></p>
+                <p><strong>Water Capacity:</strong> <span id="camp-water">10,000 liters</span></p>
+                <p><strong>Contact:</strong> <span id="camp-contact">+123 456 7890</span></p>
+            </div>
+            <button id="prev-camp-btn">Previous Camp</button>
+            <button id="next-camp-btn">Next Camp</button>
+
+        </div>
+        <!-- Charts Section -->
+        <div class="charts-section">
+            <h2>Camp Resources Overview</h2>
+            <div class="chart-container">
+                <canvas id="resources-chart" style="display: block; box-sizing: border-box; height: 239px; width: 533px; margin-left: 24px;"></canvas>
+            </div>
+        </div>
+    </div>
+    <!-- Right Column: Map and Search -->
+    <div class="right-column">
+        <!-- Map Section -->
+        <div class="map-section">
+            <div id="map" style="height: 300px; width: 100%; border-radius: 15px;"></div>
+            <button id="directions-btn">Get Directions</button>
+        </div>
+        <!-- Search Section -->
+        <div class="search-section">
+            <h2>Search People in Camp</h2>
+            <input type="text" id="search-input" placeholder="Enter name to search...">
+            <button id="search-btn">Search</button>
+            <div id="search-result" class="search-result">
+                <!-- List of people will be dynamically populated here -->
+            </div>
+        </div>
+    </div>
+    <!-- Announcements Section -->
+    <div class="announcements-section">
+        <div class="announcements-header">
+            <h2>Announcements</h2>
+            <button id="clear-notifications-btn" class="clear-btn">Clear All</button>
+        </div>
+        <ul id="announcements-list">
+            <!-- Announcements will be dynamically populated here -->
+        </ul>
+    </div>
+    <!-- Request Box -->
+    <div class="request-box">
+        <h2>Request a Camp Slot</h2>
+        <ul>
+            <li>You can book up to 6 slots per request.</li>
+            <li>Set up to 3 priority camps (e.g., Priority 1: Camp A).</li>
+            <li>If Priority 1 is full, Priority 2 will be allocated.</li>
+            <li>You have 2 hours to report to the camp after confirmation.</li>
+        </ul>
+        <button id="request-slot-btn">Request Camp Slot</button>
+    </div>
+</div>
+<!-- Request Form Popup -->
+<div id="request-form-popup" class="popup">
+    <div class="popup-content">
+        <span class="close-btn">&times;</span>
+        <h2>Request Camp Slot</h2>
+        <form id="request-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" required>
+            <!-- <label for="otp">OTP:</label> -->
+            <!-- <input type="text" id="otp" name="otp" required> -->
+            <label for="number_slot">Number Of Slot:</label>
+            <input type="number" class="number_slot" name="number[]" min="1" max="6" required>
+            <label for="priority1">Priority 1:</label>
+            <select id="priority1" name="priority1" required>
+                <option value="" disabled selected>Select a Camp</option>
+            </select>
+            <label for="priority2">Priority 2:</label>
+            <select id="priority2" name="priority2">
+                <option value="" disabled selected>Select a Camp</option>
+            </select>
+            <label for="priority3">Priority 3:</label>
+            <select id="priority3" name="priority3">
+                <option value="" disabled selected>Select a Camp</option>
+            </select>
+            <button type="submit">Submit Request</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block jscontent %}
+<!-- Leaflet CSS and JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Chart.js --> 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Your custom camps.js -->
+<script src="{{ url_for('static', filename='js/user/camps.js') }}" defer></script>
+{% endblock %}

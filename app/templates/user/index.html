@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% block csscontent%}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/user/home.css')}}">
+    <style>
+        /* Ensure the notification container takes up the leftover space */
+        .notification-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <!-- Welcome Box -->
+        <div class="welcome-container">
+            <div class="welcome-box">
+                <div class="welcome-icon">
+                    <i class="fas fa-mountain"></i>
+                </div>
+                <h1> Welcome to Landslide Detection</h1>
+            <p>Providing early warning systems helps communities prepare for natural disasters, reducing loss of
+                life and property damage. Educational resources empower individuals with knowledge on disaster
+                preparedness, response, and recovery. Support for disaster relief ensures timely assistance,
+                including food, shelter, and medical aid for affected populations. Collaboration between
+                governments, NGOs, and local communities strengthens resilience and disaster response efforts.
+                Investing in technology and infrastructure enhances the effectiveness of disaster management and
+                recovery strategies.</p>
+            <div class="welcome-content">
+                <div class="welcome-content">
+                    <a href="{{ url_for('user.alerts') }}" class="welcome-item">
+                        <i class="fas fa-bell"></i>
+                        <p>Get real-time alerts for landslide-prone areas.</p>
+                    </a>
+                    <a href="{{ url_for('user.guide') }}" class="welcome-item">
+                        <i class="fas fa-book"></i>
+                        <p>Access educational guides and resources.</p>
+                    </a>
+                    <a href="{{ url_for('user.donations') }}" class="welcome-item">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <p>Support disaster relief efforts through donations.</p>
+                    </a>
+                </div>
+            </div>
+            <a href="#" class="btn">Learn More</a>
+        </div>
+
+                   <!-- Weather Info Box -->
+<div class="weather-box">
+<div class="weather-icon">
+    <i class="fas fa-cloud-sun"></i>
+</div>
+<h2>Weather Info</h2>
+<div class="weather-details">
+    <p><strong>Location:</strong> <span id="location"></span></p>
+    <p><strong>Temperature:</strong> <span id="weather"></span></p>
+    <p><strong>Condition:</strong> <span id="condition"></span></p>
+    <p><strong>Humidity:</strong> <span id="humidity"></span></p>
+</div>
+<button class="refresh-btn"><i class="fas fa-sync-alt"></i> Refresh</button>
+</div>
+
+        <!-- Relief Camps Box -->
+        <div class="relief-camps-box">
+            <div class="camp-icon">
+                <i class="fas fa-campground"></i>
+            </div>
+            <h2> Relief Camps</h2>
+            <div class="camp-details">
+                <div id="index-camp-info" class="camp-info">
+                    <p><strong>Capacity:</strong> <span id="camp-capacity"></span> people</p>
+                    <p><strong>Food Capacity:</strong> <span id="food-supply"></span></p>
+                    <p><strong>Water Capacity:</strong> <span id="water-supply"></span></p>
+                    <p><strong>Location:</strong> <span id="camp-location"></span></p>
+                </div>
+                <div class="camp-graph">
+                    <canvas id="campChart"></canvas>
+                </div>
+            </div>
+            <button id="next-camp-btn-home" class="next-camp-btn">Next Camp <i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+</section>
+
+<!-- Donations Pie Chart -->
+<div class="chart-section">
+    <a href="{{ url_for('user.donations') }}">
+        <h2>DONATIONS</h2>
+        <div class="pie-chart">
+            <canvas id="myChart"></canvas>
+            <p id="total-donation"></p>
+        </div>
+    </a>
+</div>
+
+<!-- Notification Box -->
+<div class="notification-container">     
+<div class="notification-box">
+    <h2>Live Notifications</h2>
+    <div class="notification-content" id="notification-content">
+        <ul> </ul>
+    </div>
+</div>
+</div>
+
+<!-- Floating Chatbot Icon -->
+<div id="chatbot-icon">🤖</div>
+
+<!-- Chatbot Popup -->
+<div id="chatbot-container">
+    <div id="chatbot-header">
+        <div class="header-content">
+            <span class="status-indicator"></span>
+            <span>Sense</span>
+        </div>
+        <button id="chatbot-close" title="Close chatbot">✖</button>
+    </div>
+    <div id="chatbot-messages"></div>
+    <div id="typing-indicator" class="typing-indicator">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+    <div id="quick-replies" class="quick-replies"></div>
+    <div id="chatbot-input-container">
+        <input type="text" id="chatbot-input" placeholder="Type your message...">
+        <button id="chatbot-send">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block jscontent %}
+    <script src="{{ url_for('static', filename='js/user/index.js') }}"></script>
+{% endblock %}

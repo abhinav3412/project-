@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block csscontent %}
+<link rel="stylesheet" href="{{ url_for('static', filename='/css/local_auth/index.css')}}" >
+{% endblock %}
+
+{% block content %}
+<div class="overflow-allowed">
+<!-- Dark Overlay for Background Image -->
+<div class="overlay"></div>
+
+<!-- Heading with Typewriter Effect -->
+<div class="heading">
+  <span class="static-text">Welcome Local Authority</span>
+  <span class="typewriter-text"></span>
+</div>
+
+<!-- Logout Button -->
+<a href="{{ url_for('auth.logout') }}" class="logout">Logout</a>
+
+<!-- First Row -->
+<div class="row">
+  <!-- Box 1: Relief Camps Overview -->
+  <div class="box">
+    <h2>Relief Camps Overview</h2>
+    <div class="scrollable">
+      <ul id="camps-list">
+        <!-- <li data-camp="Camp A"><strong>Camp A:</strong> 120/200</li>
+        <li data-camp="Camp B"><strong>Camp B:</strong> 150/200</li>
+        <li data-camp="Camp C"><strong>Camp C:</strong> 100/200</li> -->
+      </ul>
+    </div>
+  </div>
+
+  <!-- Box 2: Available Resources -->
+  <div class="box">
+    <h2>Available Resources</h2>
+    <div class="chart-container">
+      <canvas id="availableResourcesChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Box 3: Warehouse Details -->
+  <div class="box">
+    <h2>Warehouse Details</h2>
+    <div class="scrollable">
+      <ul>
+        <li><strong>Warehouse A:</strong> 500 kg food, 2000 L water</li>
+        <li><strong>Warehouse B:</strong> 1000 kg food, 3000 L water</li>
+        <li><strong>Warehouse C:</strong> 800 sets clothes, 400 kits essentials</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Second Row -->
+<div class="row">
+  <!-- Box 1: Alerts and Notifications -->
+  <div class="box">
+    <h2>Alerts and Notifications</h2>
+    <div class="scrollable">
+      <ul>
+        <li class="alert-high">Low food stock in Warehouse A.</li>
+        <li class="alert-medium">Camp E is at full capacity.</li>
+        <li class="alert-low">New request from Camp D.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Box 2: Request to Add Warehouse -->
+  <div class="box">
+    <h2>Request to Add Warehouse</h2>
+    <div class="request-form">
+      <label for="warehouse-name">Warehouse Name:</label>
+      <input type="text" id="warehouse-name" placeholder="Enter warehouse name...">
+      <label for="warehouse-location">Location:</label>
+      <input type="text" id="warehouse-location" placeholder="Enter location...">
+      <button id="submit-request">Submit Request</button>
+    </div>
+  </div>
+
+  <!-- Box 3: Map -->
+  <div class="box">
+    <h2>Camp Locations</h2>
+    <div id="map" class="map-container" style="height: 300px;"></div>
+  </div>
+</div>
+</div>
+{% endblock %}
+
+{% block jscontent %}
+    <script src="{{ url_for('static', filename='/js/local_auth/index.js')}}"></script>
+{% endblock %}

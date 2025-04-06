@@ -1,0 +1,338 @@
+{% extends 'base.html' %}
+
+{% block csscontent %}
+<link rel="stylesheet" href="{{ url_for('static',filename='css/admin/camp_manager.css')}}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="camp-header">
+        <h2>Camp Resources Management</h2>
+        <button id="addResourceBtn" class="btn-add">Add Resources</button>
+    </div>
+
+    <div class="resource-container">
+        <div class="resource-box">
+            <h3>Resource Status</h3>
+            <div class="charts-container">
+                <div class="chart-wrapper">
+                    <canvas id="foodChart"></canvas>
+                    <div class="chart-label">Food</div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="waterChart"></canvas>
+                    <div class="chart-label">Water</div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="clothesChart"></canvas>
+                    <div class="chart-label">Clothes</div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="essentialsChart"></canvas>
+                    <div class="chart-label">Essentials</div>
+                </div>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <span class="legend-color capacity"></span>
+                    <span>Total Capacity</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color remaining"></span>
+                    <span>Remaining</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="resource-list">
+        <h3>Resource Details</h3>
+        <div class="table-container">
+            <table class="resource-table">
+                <thead>
+                    <tr>
+                        <th>Resource Type</th>
+                        <th>Total Capacity</th>
+                        <th>Current Stock</th>
+                        <th>Last Updated</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for resource in resources %}
+                    <tr data-resource-id="{{ resource.id }}">
+                        <td>{{ resource.type }}</td>
+                        <td>{{ resource.capacity }}</td>
+                        <td>{{ resource.current_stock }}</td>
+                        <td>{{ resource.last_updated }}</td>
+                        <td class="action-buttons">
+                            <button class="edit-btn" onclick="editResource({{ resource.id }})">Edit</button>
+                            <button class="delete-btn" onclick="deleteResource({{ resource.id }})">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Resource Modal -->
+<div id="resourceModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Add Resources</h2>
+        <form id="resourceForm">
+            <div class="form-group">
+                <label>Resource Type</label>
+                <select id="resource_type" name="resource_type" required>
+                    <option value="food">Food</option>
+                    <option value="water">Water</option>
+                    <option value="clothes">Clothes</option>
+                    <option value="essentials">Essentials</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Total Capacity</label>
+                <input type="number" id="capacity" name="capacity" required min="1">
+            </div>
+            <div class="form-group">
+                <label>Current Stock</label>
+                <input type="number" id="current_stock" name="current_stock" required min="0">
+            </div>
+            <button type="submit" class="btn-submit">Add Resource</button>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Resource Modal -->
+<div id="editResourceModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Edit Resource</h2>
+        <form id="editResourceForm">
+            <input type="hidden" id="edit_resource_id">
+            <div class="form-group">
+                <label>Resource Type</label>
+                <input type="text" id="edit_resource_type" readonly>
+            </div>
+            <div class="form-group">
+                <label>Total Capacity</label>
+                <input type="number" id="edit_capacity" name="capacity" required min="1">
+            </div>
+            <div class="form-group">
+                <label>Current Stock</label>
+                <input type="number" id="edit_current_stock" name="current_stock" required min="0">
+            </div>
+            <button type="submit" class="btn-submit">Update Resource</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block jscontent %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let charts = {};
+
+// Initialize charts
+function initializeCharts() {
+    const chartConfig = {
+        type: 'doughnut',
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    };
+
+    // Initialize charts for each resource type
+    const resourceTypes = ['food', 'water', 'clothes', 'essentials'];
+    const colors = {
+        food: '#4CAF50',
+        water: '#2196F3',
+        clothes: '#9C27B0',
+        essentials: '#FF5722'
+    };
+
+    resourceTypes.forEach(type => {
+        const ctx = document.getElementById(`${type}Chart`).getContext('2d');
+        charts[type] = new Chart(ctx, {
+            ...chartConfig,
+            data: {
+                labels: ['Capacity', 'Remaining'],
+                datasets: [{
+                    data: [100, 0],
+                    backgroundColor: [colors[type], '#FFC107']
+                }]
+            }
+        });
+    });
+}
+
+// Update charts with real data
+function updateCharts(resources) {
+    // Group resources by type
+    const groupedResources = resources.reduce((acc, resource) => {
+        const type = resource.type.toLowerCase();
+        if (!acc[type]) {
+            acc[type] = [];
+        }
+        acc[type].push(resource);
+        return acc;
+    }, {});
+
+    // Update each chart
+    Object.entries(groupedResources).forEach(([type, items]) => {
+        if (charts[type]) {
+            const totalCapacity = items.reduce((sum, item) => sum + item.capacity, 0);
+            const totalStock = items.reduce((sum, item) => sum + item.current_stock, 0);
+            const remaining = totalCapacity - totalStock;
+            
+            charts[type].data.datasets[0].data = [totalCapacity, remaining];
+            charts[type].update();
+        }
+    });
+}
+
+// Handle form submission
+document.getElementById('resourceForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        resource_type: document.getElementById('resource_type').value,
+        capacity: parseInt(document.getElementById('capacity').value),
+        current_stock: parseInt(document.getElementById('current_stock').value)
+    };
+    
+    fetch('/admin/add_resource', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Resource added successfully!');
+            location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error adding resource. Please try again.');
+    });
+});
+
+// Handle edit form submission
+document.getElementById('editResourceForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const resourceId = document.getElementById('edit_resource_id').value;
+    const formData = {
+        capacity: parseInt(document.getElementById('edit_capacity').value),
+        current_stock: parseInt(document.getElementById('edit_current_stock').value)
+    };
+    
+    fetch(`/admin/update_resource/${resourceId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Resource updated successfully!');
+            location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating resource. Please try again.');
+    });
+});
+
+// Handle edit button click
+function editResource(resourceId) {
+    // Find the resource in the table
+    const row = document.querySelector(`tr[data-resource-id="${resourceId}"]`);
+    if (!row) return;
+    
+    const resourceType = row.cells[0].textContent;
+    const capacity = parseInt(row.cells[1].textContent);
+    const currentStock = parseInt(row.cells[2].textContent);
+    
+    // Populate the edit form
+    document.getElementById('edit_resource_id').value = resourceId;
+    document.getElementById('edit_resource_type').value = resourceType;
+    document.getElementById('edit_capacity').value = capacity;
+    document.getElementById('edit_current_stock').value = currentStock;
+    
+    // Show the edit modal
+    document.getElementById('editResourceModal').style.display = 'block';
+}
+
+// Handle delete button click
+function deleteResource(resourceId) {
+    if (confirm('Are you sure you want to delete this resource?')) {
+        fetch(`/admin/delete_resource/${resourceId}`, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Resource deleted successfully!');
+                location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error deleting resource. Please try again.');
+        });
+    }
+}
+
+// Initialize when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCharts();
+    
+    // Add event listeners for modals
+    const modals = document.querySelectorAll('.modal');
+    const closeButtons = document.querySelectorAll('.close');
+    
+    document.getElementById('addResourceBtn').onclick = function() {
+        document.getElementById('resourceModal').style.display = 'block';
+    }
+    
+    closeButtons.forEach(button => {
+        button.onclick = function() {
+            modals.forEach(modal => modal.style.display = 'none');
+        }
+    });
+    
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    }
+    
+    // Update charts with initial data
+    const resources = {{ resources|tojson|safe }};
+    updateCharts(resources);
+});
+</script>
+{% endblock %} 

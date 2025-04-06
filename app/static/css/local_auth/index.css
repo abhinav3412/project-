@@ -1,0 +1,183 @@
+/* Dark Overlay for Background Image */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Adjust opacity (0.5 = 50% dark) */
+    z-index: -1; /* Place it behind the content */
+}
+
+/* Heading with Typewriter Effect */
+.heading {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.5rem;
+    color: #a2fd65;
+    text-align: left;
+    margin-bottom: 2vh;
+    display: flex;
+    align-items: baseline;
+}
+
+.static-text {
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
+.typewriter-text {
+    font-weight: 400;
+    font-size: 2rem;
+    color: #a2fd65; /* Same color as "Welcome Local Authority" */
+    overflow: hidden;
+    border-right: 0.15em solid #a2fd65; /* Cursor effect */
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+}
+
+/* Logout Button */
+.logout {
+    position: fixed;
+    top: 2vh;
+    right: 5%;
+    background: #ff6f61;
+    border: none;
+    padding: 1vh 2vw;
+    border-radius: 15px;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    z-index: 1000; /* Ensure it's above other elements */
+    text-decoration: none;
+}
+
+.logout:hover {
+    background: #ff3b2f;
+}
+
+/* Rows and Boxes */
+.row {
+    display: flex;
+    gap: 2vw;
+    margin-bottom: 2vh;
+}
+
+
+.box {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2vh 2vw;
+    flex: 1;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    position: relative; /* Required for pseudo-element */
+    overflow: hidden; /* Ensure the blur doesn't overflow */
+}
+
+/* Pseudo-element for blur effect */
+.box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(10px); /* Apply blur here */
+    z-index: -1; /* Place it behind the box content */
+    border-radius: 20px; /* Match the box's border radius */
+}
+
+.box:hover {
+    transform: scale(1.02);
+}
+/* Headings */
+h2 {
+    color: #a2fd65;
+    font-size: 2.5vh;
+    margin-bottom: 1.5vh;
+}
+
+/* Scrollable Lists */
+.scrollable {
+    max-height: 30vh;
+    overflow-y: auto;
+    margin-top: 1vh;
+    color:white;
+}
+
+.scrollable ul {
+    list-style: none;
+}
+
+.scrollable li {
+    padding: 1vh 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer; /* Make camp items clickable */
+    transition: background 0.3s ease;
+}
+
+.scrollable li:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Alerts */
+.alert-high {
+    color: #ff6f61; /* Red for high priority */
+}
+
+.alert-medium {
+    color: #ffa500; /* Orange for medium priority */
+}
+
+.alert-low {
+    color: #a2fd65; /* Green for low priority */
+}
+
+/* Request Form */
+.request-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+}
+
+.request-form input {
+    padding: 1vh 1vw;
+    border-radius: 10px;
+    border: none;
+}
+
+#submit-request {
+    background: #2575fc;
+    border: none;
+    padding: 1vh 2vw;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+#submit-request:hover {
+    background: #1a5bbf;
+}
+
+/* Chart Container */
+.chart-container {
+    height: 25vh; /* Adjusted height to fit the box */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Graphs */
+canvas {
+    max-height: 100%;
+    width: 100% !important;
+}
+
+/* Map Container */
+.map-container {
+    height: 30vh;
+    border-radius: 10px;
+    overflow: hidden;
+}

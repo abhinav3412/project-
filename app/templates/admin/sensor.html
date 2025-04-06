@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+
+{% block csscontent %}
+<link rel="stylesheet" href="{{ url_for('static',filename='css/admin/sensor.css')}}">
+
+{% endblock %}
+
+{% block content %}
+<div class="sensor-management-container">
+    <div class="sensor-management-box">
+        <div class="sensor-header">
+            <h2>Sensor Management</h2>
+            <button id="addSensorBtn" class="btn-add">Add New Sensor</button>
+        </div>
+        
+        <!-- Filter Options -->
+        <div class="search-filter-section">
+            <input type="text" id="name-filter" placeholder="Search by name..." />
+            <input type="text" id="location-filter" placeholder="Search by soil type..." />
+            <button id="clear-filters">Clear Filters</button>
+        </div>
+
+        <!-- Sensor Table -->
+        <div class="table-container">
+            <table class="sensor-table">
+                <thead>
+                    <tr>
+                        <th>Sensor Name</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Soil Type</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sensor in sensors %}
+                    <tr>
+                        <td>{{ sensor.name }}</td>
+                        <td>{{ sensor.latitude }}</td>
+                        <td>{{ sensor.longitude }}</td>
+                        <td>{{ sensor.soil_type }}</td>
+                        <td>
+                            <span class="status-badge status-{{ sensor.status.lower() }}">
+                                {{ sensor.status }}
+                            </span>
+                        </td>
+                        <td class="action-buttons">
+                            <button class="edit-btn" data-sensor-id="{{ sensor.sid }}">Edit</button>
+                            <button class="delete-btn" onclick="deleteSensor({{ sensor.sid }})">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Sensor Modal -->
+<div id="sensorModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Add New Sensor</h2>
+        <form id="sensorForm" method="POST" action="{{ url_for('admin.add_sensor') }}">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="sensor_name">Sensor Name</label>
+                    <input type="text" id="sensor_name" name="sensor_name" required 
+                           minlength="3" maxlength="50" pattern="[A-Za-z0-9\s\-_]+"
+                           title="Sensor name can contain letters, numbers, spaces, hyphens and underscores">
+                </div>
+                <div class="form-group">
+                    <label for="latitude">Latitude</label>
+                    <input type="number" id="latitude" name="latitude" step="0.000001" required 
+                           min="-90" max="90"
+                           title="Latitude must be between -90 and 90 degrees">
+                    <small class="validation-message" id="lat-validation"></small>
+                </div>
+                <div class="form-group">
+                    <label for="longitude">Longitude</label>
+                    <input type="number" id="longitude" name="longitude" step="0.000001" required 
+                           min="-180" max="180"
+                           title="Longitude must be between -180 and 180 degrees">
+                    <small class="validation-message" id="lng-validation"></small>
+                </div>
+                <div class="form-group">
+                    <label for="soil_type">Soil Type</label>
+                    <select id="soil_type" name="soil_type" required>
+                        <option value="">Select soil type</option>
+                        <option value="clay">Clay</option>
+                        <option value="sand">Sand</option>
+                        <option value="loam">Loam</option>
+                        <option value="silt">Silt</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-submit" id="submitBtn">Add Sensor</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Sensor Modal -->
+<div id="editSensorModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Edit Sensor</h2>
+        <form id="editSensorForm">
+            <input type="hidden" id="edit_sensor_id" name="sensor_id">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="edit_sensor_name">Sensor Name</label>
+                    <input type="text" id="edit_sensor_name" name="sensor_name" required 
+                           title="Enter the name of the sensor" placeholder="Enter sensor name">
+                </div>
+                <div class="form-group">
+                    <label for="edit_latitude">Latitude</label>
+                    <input type="number" step="any" id="edit_latitude" name="latitude" required 
+                           title="Enter the latitude coordinate" placeholder="Enter latitude">
+                </div>
+                <div class="form-group">
+                    <label for="edit_longitude">Longitude</label>
+                    <input type="number" step="any" id="edit_longitude" name="longitude" required 
+                           title="Enter the longitude coordinate" placeholder="Enter longitude">
+                </div>
+                <div class="form-group">
+                    <label for="edit_soil_type">Soil Type</label>
+                    <select id="edit_soil_type" name="soil_type" required 
+                            title="Select the type of soil" aria-label="Select soil type">
+                        <option value="clay">Clay</option>
+                        <option value="sand">Sand</option>
+                        <option value="silt">Silt</option>
+                        <option value="loam">Loam</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit_status">Status</label>
+                    <select id="edit_status" name="status" required 
+                            title="Select the status" aria-label="Select status">
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                        <option value="Maintenance">Maintenance</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+                <button type="button" class="btn-submit" onclick="updateSensor()">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block jscontent %}
+<script src="{{ url_for('static',filename='js/admin/sensor_form.js')}}"></script>
+<script>
+// Add event listeners when the document is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click event listeners to all edit buttons
+    document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const sensorId = this.getAttribute('data-sensor-id');
+            editSensor(sensorId);
+        });
+    });
+});
+
+// Function to edit sensor
+function editSensor(sensorId) {
+    // Get the sensor data
+    fetch(`/admin/get_sensor/${sensorId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                throw new Error(data.message || 'Error loading sensor data');
+            }
+            
+            const sensor = data.sensor;
+            
+            // Populate the edit form
+            document.getElementById('edit_sensor_id').value = sensor.sid;
+            document.getElementById('edit_sensor_name').value = sensor.name;
+            document.getElementById('edit_latitude').value = sensor.latitude;
+            document.getElementById('edit_longitude').value = sensor.longitude;
+            document.getElementById('edit_soil_type').value = sensor.soil_type;
+            document.getElementById('edit_status').value = sensor.status;
+            
+            // Show the edit modal
+            document.getElementById('editSensorModal').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error loading sensor data: ' + error.message);
+        });
+}
+
+// Function to close edit modal
+function closeEditModal() {
+    document.getElementById('editSensorModal').style.display = 'none';
+}
+
+// Function to update sensor
+function updateSensor() {
+    const sensorId = document.getElementById('edit_sensor_id').value;
+    const formData = {
+        name: document.getElementById('edit_sensor_name').value,
+        latitude: parseFloat(document.getElementById('edit_latitude').value),
+        longitude: parseFloat(document.getElementById('edit_longitude').value),
+        soil_type: document.getElementById('edit_soil_type').value,
+        status: document.getElementById('edit_status').value
+    };
+
+    fetch(`/admin/update_sensor/${sensorId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Close the edit modal
+            document.getElementById('editSensorModal').style.display = 'none';
+            
+            // Show success message
+            alert('Sensor updated successfully');
+            
+            // Refresh the page to update the table
+            location.reload();
+            
+            // Force refresh of dashboard components if they exist
+            // This will be executed after the page reloads
+            setTimeout(() => {
+                // Check if we're on the dashboard page
+                if (window.location.pathname.includes('/admin/')) {
+                    // Try to refresh the map and alerts
+                    try {
+                        if (typeof fetchSensorData === 'function') {
+                            fetchSensorData();
+                        }
+                        
+                        if (typeof updateSensorStatusChart === 'function') {
+                            fetch('/admin/get_sensors')
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        updateSensorStatusChart(data.sensors);
+                                    }
+                                });
+                        }
+                    } catch (e) {
+                        console.error('Error refreshing dashboard components:', e);
+                    }
+                }
+            }, 1000);
+        } else {
+            alert(data.message || 'Failed to update sensor');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while updating the sensor');
+    });
+}
+
+// Function to delete sensor
+function deleteSensor(sensorId) {
+    if (confirm('Are you sure you want to delete this sensor?')) {
+        fetch(`/admin/delete_sensor/${sensorId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload(); // Refresh the page
+            } else {
+                alert(data.message || 'Failed to delete sensor');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error deleting sensor');
+        });
+    }
+}
+</script>
+{% endblock %}
+    

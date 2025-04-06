@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block csscontent %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="{{ url_for('static', filename='/css/user/alert.css')}}" >
+{% endblock %}
+
+{% block content %}
+<h1 id="disp"></h1>
+<!-- Main Content Container -->
+<div class="container">
+    <!-- Top Row: Map and Sensor Details -->
+    <div class="top-row">
+        <!-- Map Section -->
+        <div class="map-container glass">
+            <div id="map"></div>
+        </div>
+
+        <!-- Sensor Details Section -->
+        <div id="sensor-details" class="glass">
+            <h2>Sensor Details</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sensor ID</th>
+                        <th>Status</th>
+                        <th>Rainfall (mm)</th>
+                        <th>Forecasted Rainfall (mm)</th>
+                        <th>Soil Saturation (%)</th>
+                        <th>Slope (°)</th>
+                        <th>Seismic Activity</th>
+                        <th>Soil Type</th>
+                        <th>Risk Level</th>
+                        <th>Predicted Landslide Time</th>
+                    </tr>
+                </thead>
+                <tbody id="sensor-table-body">
+                    <!-- Sensor data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Bottom Row: Alerts and Evacuation Routes -->
+    <div class="bottom-row">
+        <!-- Alerts Section -->
+        <div id="alert-section" class="glass">
+            <h2>Alerts</h2>
+            <div id="alert-box">
+                <p id="alert-message"></p>
+            </div>
+            <audio id="alert-sound" src="{{ url_for('static',filename='alert-sound.mp3') }}"></audio>
+        </div>
+
+        <!-- Mini Pop-Up Modal -->
+        <div id="popup-modal" class="popup-modal">
+            <div class="popup-content">
+                <h3>Alert Details</h3>
+                <p id="popup-message"></p>
+                <button id="confirm-share" class="share-btn">Share on WhatsApp</button>
+                <button id="cancel-share" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+
+        <!-- Evacuation Routes Section -->
+        <div id="evacuation-routes" class="glass">
+            <h2>Evacuation Routes</h2>
+            <div id="route-info">
+                <p><strong>Status:</strong> Calculating...</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block jscontent %}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='js/user/alert.js')}}"></script>
+{% endblock %}

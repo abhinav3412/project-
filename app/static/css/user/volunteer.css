@@ -1,0 +1,316 @@
+/* Glassmorphism Effect */
+.glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    color: white;
+    padding: 2%;
+    margin: 2vh auto;
+    max-width: 800px;
+    width: 90%;
+    transition: all 0.3s ease;
+}
+.glass:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Container */
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 2vh 5%;
+}
+
+/* Top Row Layout */
+.top-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 5px;
+    height: 100%;
+    min-height: 320px;
+}
+
+/* Become a Volunteer Section */
+.volunteer-details {
+    width: 60%;
+    animation: slideInFromLeft 1s ease-in-out;
+}
+.volunteer-details h2 {
+    font-size: 2rem;
+    color: #a2fd65;
+    margin-bottom: 1.5vh;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+.volunteer-details h2:hover {
+    color: #ffdd57;
+    transform: scale(1.05); /* Zoom effect on hover */
+}
+.volunteer-details p {
+    font-size: 1.2rem;
+    margin-bottom: 2vh;
+    color: beige;
+    transition: opacity 0.3s ease, letter-spacing 0.3s ease;
+}
+.volunteer-details p:hover {
+    opacity: 0.8;
+    letter-spacing: 0.3px; /* Slightly spaced-out text */
+}
+.form-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5vh;
+    transition: transform 0.3s ease;
+}
+.form-field:hover {
+    transform: translateX(5px); /* Slide effect on hover */
+}
+.form-field label {
+    width: 25%; /* Fixed width for labels */
+    font-size: 1.2rem;
+    color: beige;
+    margin-right: 1vw;
+    transition: color 0.3s ease;
+}
+.form-field label:hover {
+    color: #ffdd57; /* Brighten label text on hover */
+}
+.form-field input {
+    width: 75%; /* Remaining width for inputs */
+    padding: 0.5vh;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white; /* Placeholder text color */
+    transition: all 0.3s ease, box-shadow 0.3s ease;
+}
+.form-field input::placeholder {
+    color: lightgrey; /* Light grey placeholder text */
+}
+.form-field input:focus {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Glow effect on focus */
+}
+#volunteer-form .btn {
+    margin-top: 1.5vh;
+    padding: 0.8vh 2vw;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease, box-shadow 0.3s ease;
+}
+#volunteer-form .btn:hover {
+    background: #005bb5;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.7); /* Glow effect on hover */
+}
+
+/* Available Role Section */
+.available-role {
+    width: 40%;
+    text-align: center;
+    animation: fadeIn 1.5s ease-in-out;
+}
+.available-role h2 {
+    font-size: 2rem;
+    color: #a2fd65;
+    margin-bottom: 1.5vh;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+.available-role h2:hover {
+    color: #ffdd57;
+    transform: scale(1.1); /* Zoom effect on hover */
+}
+.role-table-container {
+    max-height: 400px;
+    overflow: hidden;
+    position: relative;
+}
+.role-table-container:hover {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* Glow effect on hover */
+}
+#role-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+#role-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.15);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+}
+#role-table tbody {
+    display: block;
+    animation: scrollTable 30s linear infinite;
+}
+#role-table tbody:hover {
+    animation-play-state: paused;
+}
+@keyframes scrollTable {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-50%);
+    }
+}
+#role-table thead tr,
+#role-table tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+#role-table tbody tr {
+    background: rgba(255, 255, 255, 0.1);
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+#role-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+#role-table th,
+#role-table td {
+    padding: 1vh;
+    text-align: left;
+    color: beige;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+#role-table th {
+    color: #a2fd65;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+#role-table tr:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.01);
+}
+
+/* Bottom Row Layout */
+.bottom-row {
+    display: flex;
+    justify-content: center;
+    margin-top: -5vh;
+    animation: slideInFromBottom 1s ease-in-out;
+}
+
+/* Volunteer History Section */
+.volunteer-history {
+    width: 80%;
+    text-align: center;
+   
+    
+}
+.volunteer-history h2 {
+    font-size: 2rem;
+    color: #a2fd65;
+    margin-bottom: 1.5vh;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+.volunteer-history h2:hover {
+    color: #ffdd57;
+    transform: rotate(-2deg); /* Opposite tilt effect */
+}
+#history-list {
+    list-style: disc;
+    padding-left: 20px;
+    margin-top: 1vh;
+    font-size: 1.2rem;
+    color: beige;
+    overflow-y: scroll;
+}
+#history-list li {
+    margin: 0.8vh 0;
+    animation: blinker 1s infinite;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes slideInFromLeft {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+@keyframes slideInFromBottom {
+    0% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+@keyframes blinker {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+/* Typewriter Effect */
+.typewriter-text {
+    font-size: 1.2rem;
+    margin-bottom: 2vh;
+    color: beige;
+    overflow: hidden; /* Ensures text is clipped during animation */
+    white-space: nowrap; /* Prevents text from wrapping */
+    border-right: 0.15em solid #ffdd57; /* Cursor effect */
+    width: 0; /* Start with no visible text */
+    animation: typing 2s steps(40, end), erasing 1s steps(40, end) 3s, blink-caret 0.75s step-end infinite;
+}
+
+/* Typing Animation */
+@keyframes typing {
+    from {
+        width: 0; /* Start with no width */
+    }
+    to {
+        width: 100%; /* Expand to full width */
+    }
+}
+
+/* Erasing Animation */
+@keyframes erasing {
+    from {
+        width: 100%; /* Start with full width */
+    }
+    to {
+        width: 0; /* Shrink to no width */
+    }
+}
+
+/* Blinking Cursor Animation */
+@keyframes blink-caret {
+    from,
+    to {
+        border-color: transparent; /* Hide cursor */
+    }
+    50% {
+        border-color: #ffdd57; /* Show cursor */
+    }
+}

@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block csscontent %}
+<link rel="stylesheet" href="{{ url_for('static', filename='/css/user/donations.css')}}" >
+{% endblock %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <section class="hero">
+        <!-- Top Row: Financial Aid Box + Donation Box -->
+        <div class="top-row">
+            <!-- Financial Aid Box -->
+            <div class="donation-section">
+                <h2>FINANCIAL AID</h2>
+                <p>In times of disaster, every contribution counts, and your support can make a world of difference. Our platform is designed to empower individuals and communities to take action when it matters most. By donating, you play a critical role in providing vital resources that can save lives and alleviate suffering.</p>
+                <p>Your generosity directly helps to deliver essential supplies like food, clothing, medical supplies, and shelter to those who are facing the most challenging circumstances. These resources are often the difference between life and death in times of crisis, and your donation ensures that aid reaches those who need it most.</p>
+                <!-- Donation Button -->
+                <form>
+                    <script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_PpXQFE6Q1AUiLl" async></script>
+                </form>
+            </div>
+
+            <!-- Donation Box -->
+            <div class="chart-section">
+                <h2>DONATIONS</h2>
+                <div class="pie-chart">
+                    <canvas id="myChart" width="200" height="200"></canvas>
+                    <div class="chart-labels">
+                        <div class="label" id="amount-donated">Amount Donated: ₹0</div>
+                        <div class="label" id="items-donated">Items Donated: None</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+          <!-- Bottom Row: Essentials Box -->
+          <div class="bottom-row">
+            <div class="essentials">
+                <h2>ESSENTIALS</h2>
+                <p>Every donation matters. Every contribution counts. Your generosity empowers those in need. Let's come together and make a difference.</p>
+                <!-- Essentials Donation Button -->
+                <button id="essential-btn">Donate</button>
+            </div>
+        </div>
+      <!-- Essential Form Popup -->
+<div id="essential-form-popup" class="popup">
+    <div class="popup-content">
+        <span class="close-btn">&times;</span>
+        <h2>Essential Form</h2>
+        <form id="essential-form">
+            <!-- <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="{{ current_user.username}}" required>
+
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" value="{{ current_user.mobile if current_user.mobile else '' }}" required> -->
+
+            <!-- Container for multiple items -->
+            <div id="items-container">
+                <div class="item-group">
+                    <label for="item">Item:</label>
+                    <input type="text" class="item-name" name="item[]" required>
+
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" class="item-quantity" name="quantity[]" min="1" required>
+
+                    <label for="condition">Condition:</label>
+                    <select class="item-condition" name="condition[]">
+                        <option value="new">Unused</option>
+                        <option value="used">Used (Good)</option>
+                        <option value="used-fair">Used (Fair)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Button to add more items -->
+            <button type="button" id="add-item-btn">Add Another Item</button><br><br>
+
+            <label for="location">Address (for pickup):</label><br>
+            <input type="text" id="address" name="address" value="{{ current_user.address if current_user.address else '' }}" required><br><br>
+
+            <button type="submit">Submit donation</button>
+        </form>
+    </div>
+</div>
+    </section>
+    <!-- Scripts -->
+    
+
+{% endblock %}
+
+{% block jscontent %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='/js/user/donations.js')}}"></script>
+{% endblock %}

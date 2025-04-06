@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOOP SENSE</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" sizes="16x16" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="icon" type="image/x-icon" sizes="32x32" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="icon" type="image/x-icon" sizes="48x48" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/styles.css') }}">
+    {% block csscontent %}
+    {% endblock %}
+</head>
+<body>
+    {% set role_routes = {
+        'user': {
+            'home': 'user.index',
+            'alerts': 'user.alerts',
+            'camps': 'user.camps',
+            'donations': 'user.donations',
+            'volunteer': 'user.volunteer',
+            'forums': 'user.forums',
+            'guide': 'user.guide'
+        },
+        'admin':{
+            'home': 'admin.index',
+            'camp': 'admin.camp',
+            'user': 'admin.user',
+            'warehouse': 'admin.warehouse',
+            'sensor': 'admin.sensor'
+        }
+    } %}
+    
+    {% set user_role = current_user.role if current_user.is_authenticated else 'guest' %}
+
+    {% if request.endpoint not in  ['auth.login', 'local_auth.index','warehouse_manager.index','camp_manager.index'] %}
+    <header>
+        <div class="nav-container">
+            <nav>
+                <ul>
+                    {% if user_role in role_routes %}
+                        {% for label, endpoint in role_routes[user_role].items() %}
+                            <li {% if request.endpoint == endpoint %} class="active" {% endif %}>
+                                <a href="{{ url_for(endpoint) }}">{{ label.capitalize() }}</a>
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <!-- Logout button should always be shown when logged in -->
+                    {% if current_user.is_authenticated %}
+                        <li class="logout">
+                            <a href="{{ url_for('auth.logout') }}">Logout</a>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <!-- {% if current_user %} -->
+        <!-- <span style="display: flex; gap: 50px;background-color: rgba(0,0,0,0.5);">
+            <h1 style="color: red;">user   :{{current_user.email}}</h1>
+            <h1 style="color: red;">enpoint:{{request.endpoint}}</h1>
+        </span> -->
+    {% else %} 
+    <h1 style="color: red;">Hi</h1>
+    {% endif %}
+    {% endif %}
+    {% block content %}
+    {% endblock %}
+    {% block jscontent %}
+    {% endblock %}
+</body>
+</html>

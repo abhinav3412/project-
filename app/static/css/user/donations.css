@@ -1,0 +1,382 @@
+/* Hero Section */
+.hero {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column; /* Stack sections vertically */
+    align-items: center; /* Center content */
+    padding: 2vh 5%; /* Responsive padding */
+    gap: 2vh; /* Space between sections */
+    animation: slideInFromTop 1s ease-in-out;
+}
+
+/* Top Row (Financial Aid Box + Donation Box) */
+.top-row {
+    display: flex;
+    justify-content: space-between; /* Space between boxes */
+    width: 100%;
+    max-width: 1200px; /* Limit maximum width for better alignment */
+    margin: 0 auto; /* Center the row */
+    gap: 2vh; /* Space between boxes */
+    animation: fadeIn 1s ease-in-out;
+    max-height: 375px;
+}
+
+/* Financial Aid Box */
+.donation-section {
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Frosted glass effect */
+    -webkit-backdrop-filter: blur(10px); /* For Safari compatibility */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+    padding: 3vh; /* Reduced padding */
+    border-radius: 15px;
+    color: #fff;
+    opacity: 0.9;
+    width: 48%; /* Adjust width for two-column layout */
+    max-width: 600px; /* Limit maximum width */
+    line-height: 1.5;
+    text-align: justify; /* Center text */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+    transition: all 0.3s ease;
+    height: 100%; /* Ensure height adjusts dynamically */
+    max-height: 420px;
+}
+.donation-section h2 {
+    color: #a2fd65;
+}
+.donation-section:hover {
+    transform: translateY(-1vh); /* Lift effect on hover */
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3); /* Enhanced shadow */
+}
+.donation-section p {
+    font-size: 2vh;
+    transition: opacity 0.3s ease;
+}
+.donation-section p:hover {
+    opacity: 0.8; /* Fade effect on hover */
+}
+
+/* Donation Box */
+.chart-section {
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Frosted glass effect */
+    -webkit-backdrop-filter: blur(10px); /* For Safari compatibility */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+    width: 48%; /* Adjust width for two-column layout */
+    max-width: 300px; /* Limit maximum width */
+    text-align: justify;
+    border-radius: 20px;
+    opacity: 0.9;
+    padding: 2vh; /* Responsive padding */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+    transition: all 0.3s ease;
+    animation: fadeIn 1s ease-in-out;
+    height: 100%; /* Ensure height adjusts dynamically */
+    max-height: 420px;
+}
+.chart-section:hover {
+    transform: translateY(-1vh); /* Lift effect on hover */
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3); /* Enhanced shadow */
+}
+.chart-section h2 {
+    color: #a2fd65;
+    font-size: clamp(2vh, 3vw, 3vh); /* Responsive font size */
+    transition: color 0.3s ease;
+    text-align: center;
+}
+.chart-section h2:hover {
+    color: #ffdd57; /* Brighten heading on hover */
+}
+.pie-chart {
+    position: relative;
+    width: 80%;
+    padding-bottom: 100%; /* Maintain aspect ratio */
+    overflow: hidden;
+    margin-left: 10%;
+    transition: transform 0.3s ease;
+}
+.pie-chart:hover {
+    transform: scale(1.05); /* Slight zoom effect on hover */
+}
+.chart-labels {
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Prevent horizontal overflow */
+    color: #f0f0f0;
+    font-weight: 600;
+    line-height: 1rem;
+    font-size: clamp(2.5vh, 3vw, 3vh); /* Responsive font size */
+    transition: color 0.3s ease;
+    width: 90%;
+    max-height: 100px; /* Prevent labels from exceeding the container height */
+    word-wrap: break-word; /* Break long words */
+    padding: 1%; /* Add padding for better spacing */
+}
+
+.chart-labels::-webkit-scrollbar {
+    width: 8px; /* Set scrollbar width */
+}
+
+.chart-labels::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3); /* Scrollbar thumb color */
+    border-radius: 4px; /* Rounded scrollbar */
+}
+
+.chart-labels::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5); /* Hover effect for scrollbar */
+}
+
+.label {
+    text-align: left;   
+    font-size: clamp(1.5vh, 2vw, 2vh); /* Responsive font size */
+    transition: transform 0.3s ease;
+}
+
+
+/* Bottom Row (Essentials Box) */
+.bottom-row {
+    display: flex;
+    justify-content: center; /* Center the box horizontally */
+    width: 100%;
+    max-width: 1200px; /* Limit maximum width for better alignment */
+    margin: 0 auto; /* Center the row */
+    margin-top: -1.5vh; /* Space above the box */
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Essentials Box */
+.essentials {
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Frosted glass effect */
+    -webkit-backdrop-filter: blur(10px); /* For Safari compatibility */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+    padding: 2vh; /* Responsive padding */
+    border-radius: 15px;
+    color: #fff;
+    opacity: 0.9;
+    width: 90%; /* Responsive width */
+    max-width: 500px; /* Limit maximum width */
+    line-height: 1.5;
+    text-align: center; /* Center text */
+    margin-bottom: 2vh; /* Space at the bottom */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+    transition: all 0.3s ease;
+    animation: fadeIn 1s ease-in-out;
+    height: auto; /* Ensure height adjusts dynamically */
+    margin-top: 12vh;
+}
+.essentials h2{
+    color: #a2fd65; 
+}
+.essentials:hover {
+    transform: translateY(-1vh); /* Lift effect on hover */
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3); /* Enhanced shadow */
+}
+.essentials p {
+    font-size: 2vh;
+    transition: opacity 0.3s ease;
+}
+.essentials p:hover {
+    opacity: 0.8; /* Fade effect on hover */
+}
+
+/* Buttons */
+.btn {
+    background-color: #007bff;
+    color: #fff;
+    padding: 1vh 2vh; /* Responsive padding */
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: clamp(1.5vh, 2vw, 2vh); /* Responsive font size */
+    margin-top: 1vh; /* Space above the button */
+    transition: all 0.3s ease;
+}
+.btn:hover {
+    background-color: #005bb5; /* Darker blue on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+#essential-btn {
+    margin-top: 1.2vh;
+    padding: 0.6vh 2vw;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+#essential-btn:hover {
+    background: #005bb5; /* Darker blue on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* essential Form Popup */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.popup-content {
+    background: rgba(255, 255, 255, 0.1); /* Glassmorphism effect */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgb(255, 255, 255);
+    padding: 3% 4%;
+    border-radius: 20px;
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+    opacity: 0.9;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+.popup-content h2 {
+    font-size: 1.6rem;
+    color: #a2fd65;
+    margin-bottom: 1.2vh;
+}
+.popup-content label {
+    display: block;
+    margin: 1vh 0 0.5vh;
+    color: rgb(255, 255, 255);
+    font-size: 1rem;
+}
+.popup-content input,
+.popup-content select {
+    width: 100%;
+    padding: 1vh;
+    margin-bottom: 1.5vh;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    color: rgb(255, 254, 254);
+}
+.popup-content button[type="submit"] {
+    padding: 1vh 2vw;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+.popup-content button[type="submit"]:hover {
+    background: #005bb5;
+}
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    color: white;
+    cursor: pointer;
+}
+.close-btn:hover {
+    color: #ffdd57;
+}
+#add-item-btn{
+    background-color: #007bff;
+    color: #fff;
+    padding: 1vh 2vh; /* Responsive padding */
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: clamp(1.5vh, 2vw, 2vh); /* Responsive font size */
+    margin-top: 1vh; /* Space above the button */
+    transition: all 0.3s ease;
+}
+.remove-item-btn{
+    background-color: #ff0000;
+    color: #fff;
+    padding: 1vh 2vh; /* Responsive padding */
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: clamp(1.5vh, 2vw, 2vh); /* Responsive font size */
+    margin-top: 1vh; /* Space above the button */
+    transition: all 0.3s ease;
+}
+label {
+    font-size: 1rem;
+    color: #fff;
+    margin-bottom: 8px;
+    display: inline-block;
+  }
+  
+  .item-condition {
+    width: 100%;
+    height: 2.5rem;
+    padding: 8px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: transparent; /* Transparent background */
+    border: 2px solid #ad2f2f;
+    border-radius: 8px;
+    outline: none;
+    appearance: none; /* Remove default style */
+    cursor: pointer;
+  }
+  
+  /* Customize the dropdown options */
+  .item-condition option {
+    background-color: #000000c4; /* Dark background for options */
+    color: #fff; /* White text */
+  }
+  
+ 
+
+  .items-contai, .item-group{
+   /* Set a fixed height */
+    overflow-y: scroll; /* Enable vertical scroll if content exceeds height */
+    overflow-x: hidden;
+    padding: 30px;
+  }
+  
+  
+ 
+  
+/* Animations */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes slideInFromTop {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes slideInFromTop {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

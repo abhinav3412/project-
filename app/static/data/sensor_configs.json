@@ -1,0 +1,28 @@
+[
+    {
+        "id": 1,
+        "name": "Kannur Fort",
+        "latitude": 11.8662,
+        "longitude": 75.392918,
+        "soil_type": "loam",
+        "operational_status": "Active",
+        "is_inactive": false
+    },
+    {
+        "id": 2,
+        "name": "Sngcet",
+        "latitude": 12.1415,
+        "longitude": 75.2501,
+        "soil_type": "silt",
+        "operational_status": "Active",
+        "is_inactive": false
+    },
+    {
+        "id": 3,
+        "name": "junction",
+        "latitude": 11.916934,
+        "longitude": 75.357973,
+        "soil_type": "sand",
+        "operational_status": "Active"
+    }
+]

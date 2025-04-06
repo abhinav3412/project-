@@ -1,0 +1,91 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('../images/forest.png');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    max-height: 100vh;
+    overflow: hidden;
+    position: relative; /* Important for positioning the pseudo-element */
+}
+
+.overflow-allowed{
+    overflow: scroll;
+}
+/* Dark Overlay using Pseudo-Element */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* Adjust opacity (0.5 = 50% dark) */
+    z-index: -1; /* Place it behind the content */
+  }
+/* Navigation Bar */
+.nav-container {
+    background:  linear-gradient(to right, #003564, #337429);
+    padding: 0.5vh 1%;
+    border-radius: 40px;
+    margin: 1vh 5%;
+    opacity: 0.9;
+    box-sizing: border-box;
+}
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: space-around; /* Ensures equal spacing between items */
+    align-items: center; /* Vertically centers items */
+    gap: 1%; /* Adds consistent spacing between items */
+    font-weight: 700;
+}
+nav li {
+    margin: 0; /* Remove default margins */
+}
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 2vh;
+    padding: 1vh 2%;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    border-radius: 20px;
+}
+nav a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05); /* Slight zoom effect */
+    border-radius: 40px;
+    padding: 1.5vh 50%;
+}
+nav li:first-child {
+    padding-left: 2%; /* Add padding to the left for the Home link */
+}
+nav li:last-child {
+    padding-right: 2%; /* Add padding to the right for the Logout link */
+}
+.active a {
+    background-color: #007bff;
+    border-radius: 40px;
+    padding: 1.5vh 50%;
+    transform: scale(1.1); /* Highlight active link */
+}
+/* 
+.logout {
+    background: #ff6f61;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .logout:hover {
+    background: #ff3b2f;
+  } */

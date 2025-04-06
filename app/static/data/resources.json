@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1,
+        "type": "food",
+        "capacity": 1000,
+        "current_stock": 750,
+        "last_updated": "2024-04-03 10:00:00",
+        "camp_id": 1
+    },
+    {
+        "id": 2,
+        "type": "water",
+        "capacity": 2000,
+        "current_stock": 1500,
+        "last_updated": "2024-04-03 10:00:00",
+        "camp_id": 1
+    },
+    {
+        "id": 3,
+        "type": "clothes",
+        "capacity": 500,
+        "current_stock": 300,
+        "last_updated": "2024-04-03 10:00:00",
+        "camp_id": 1
+    },
+    {
+        "id": 4,
+        "type": "essentials",
+        "capacity": 800,
+        "current_stock": 600,
+        "last_updated": "2024-04-03 10:00:00",
+        "camp_id": 1
+    }
+] 

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block csscontent %}
+<link rel="stylesheet" href="{{ url_for('static', filename='/css/user/forums.css')}}" >
+{% endblock %}
+
+{% block content %}
+
+    <!-- Forums Section -->
+    <main class="forum-container">
+        <!-- Top Row: FAQ and Ask a Question -->
+        <section class="top-row">
+            <!-- FAQ Section -->
+            <div class="box faq-section">
+                <h2>Frequently Asked Questions (FAQs)</h2>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <button class="faq-question">What should I do during a landslide?</button>
+                        <p class="faq-answer">Stay calm and move to higher ground immediately. Avoid areas near slopes or cliffs.</p>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">How can I report a landslide?</button>
+                        <p class="faq-answer">Contact local authorities immediately.</p>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">Where can I find safety guides?</button>
+                        <p class="faq-answer">Visit the "Guide" section of our website for detailed safety instructions.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ask a Question Section -->
+            <div class="box ask-question">
+                <h2>Ask a Question</h2>
+                <form id="question-form">
+                    <label for="question-title">Title:</label>
+                    <input type="text" id="question-title" name="title" required>
+            
+                    <label for="question-body">Details:</label>
+                    <textarea id="question-body" name="content" required></textarea>
+            
+                    <button type="submit">Submit Question</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Bottom Row: Feedback Form and Recent Threads -->
+        <section class="bottom-row">
+            <!-- Feedback Form Section -->
+            <div class="box feedback-section">
+                <h2>Feedback Form</h2>
+                <form id="feedback-form">
+                    <label for="feedback-name">Name:</label>
+                    <input type="text" id="feedback-name" name="feedback-name" value="{{ current_user.username }}" placeholder="Your name" required>
+
+                    <label for="feedback-email">Email:</label>
+                    <input type="email" id="feedback-email" name="feedback-email" value="{{ current_user.email }}" placeholder="Your email" required>
+                    
+                    <label for="feedback-message">Message:</label>
+                    <textarea id="feedback-message" name="feedback-message" placeholder="Your feedback or suggestions" required></textarea>
+                    
+                    <button type="submit">Submit Feedback</button>
+                </form>
+            </div>
+
+            <!-- Recent Threads Section -->
+            <div class="box threads">
+                <h2>Recent Threads</h2>
+                <div class="threads-container">
+                    <ul class="thread-list" id="thread-list"></ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="forum-footer">
+        <p>&copy; 2025 Landslide Detection. All rights reserved.</p>
+    </footer>
+    {% endblock %}
+
+    {% block jscontent %}
+        <script src="{{ url_for('static', filename='/js/user/forums.js')}}"></script>
+    {% endblock %}

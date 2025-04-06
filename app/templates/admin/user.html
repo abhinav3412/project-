@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block csscontent%}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/admin/user.css')}}">
+{% endblock %}
+
+{% block content %}
+    <!-- Main Content -->
+    <div class="user-management-container">
+        <div class="user-management-box">
+            <div class="user-header">
+                <h2>User Management</h2>
+                <button id="add-user-btn" class="btn">Add New User</button>
+            </div>
+            
+            <!-- Filter Options -->
+            <div class="search-filter-section">
+                <input type="text" id="name-filter" placeholder="Search by name..." />
+                <input type="text" id="location-filter" placeholder="Search by location..." />
+                <button id="clear-filters">Clear Filters</button>
+            </div>
+
+            <!-- User Table -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>UID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Location</th>
+                            <th>Mobile</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-list">
+                        <!-- Dynamically populated via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Form Modal -->
+    <div id="user-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Add User</h2>
+            <form id="user-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <div class="password-container">
+                            <input type="password" id="password" name="password" required>
+                            <button type="button" id="view-password" class="view-password-btn">Show</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location:</label>
+                        <input type="text" id="location" name="location">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mobile">Mobile:</label>
+                        <input type="tel" id="mobile" name="mobile">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">Role:</label>
+                        <select id="role" name="role" required>
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                            <option value="local_auth">Local Auth</option>
+                            <option value="warehouse_manager">Warehouse manager</option>
+                            <option value="camp_manager">Camp manager</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="associated-camp-id">Associated Camp ID:</label>
+                        <input type="number" id="associated-camp-id" name="associated-camp-id">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jscontent %}
+    <script src="{{ url_for('static', filename='js/admin/user.js') }}"></script>
+{% endblock %}

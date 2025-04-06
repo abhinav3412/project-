@@ -1,0 +1,259 @@
+/* Main Content */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 10vh); /* Adjust for navbar height */
+    padding: 2%; /* Equal padding on all sides */
+}
+
+.camp-management {
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Frosted glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+    padding: 3% 4%; /* Reduced padding */
+    border-radius: 20px; /* Slightly smaller border radius */
+    width: 90%;
+    max-width: 1200px; /* Adjusted for larger screens */
+    text-align: center;
+    opacity: 0.9;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    animation: slideInFromTop 1.5s ease-in-out forwards; /* Apply animation */
+    transition: all 0.3s ease;
+    max-height: 470px;
+    height: 75%;
+    overflow: hidden;
+    margin-top: -7%;
+}
+
+.camp-management h1 {
+    color: #a2fd65;
+    font-size: 2.5rem;
+    margin-bottom: 2vh;
+    transition: color 0.3s ease;
+}
+
+.camp-management h1:hover {
+    color: #ffdd57; /* Brighten heading on hover */
+}
+
+/* Search Bar */
+.search-section {
+    display: flex;
+    gap: 1vw;
+    justify-content: center;
+    margin-bottom: 2vh;
+}
+
+.search-section input {
+    width: 70%;
+    padding: 1vh;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    color: beige;
+    transition: all 0.3s ease;
+}
+
+.search-section input:focus {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+.search-section button {
+    padding: 1vh 2vw;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-section button:hover {
+    background: #005bb5;
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Add Camp Button */
+.btn {
+    padding: 1vh 2vw;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background: #005bb5;
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Scrollable Camp List */
+.scrollable-camp-list {
+    max-height: 400px; /* Fixed height for scrollable area */
+    overflow-y: auto; /* Enable vertical scrolling */
+    margin-top: 2vh;
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+    border-radius: 10px;
+    padding: 1%;
+    background: rgba(255, 255, 255, 0.1); /* Glassmorphism effect */
+    backdrop-filter: blur(10px);
+}
+
+.scrollable-camp-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.scrollable-camp-list th,
+.scrollable-camp-list td {
+    padding: 1vh;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    color: beige;
+}
+
+.scrollable-camp-list th {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Edit/Delete Buttons */
+.edit-btn, .delete-btn {
+    padding: 0.8vh 1.5vw;
+    font-size: 1rem;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.edit-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #005bb5;
+    transform: scale(1.05);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+.delete-btn {
+    background-color: #ff4d4d;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #e74c3c;
+    transform: scale(1.05);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    overflow-y: scroll;
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 3% 4%;
+    border-radius: 20px;
+    width: 60%;
+    /* max-width: 500px; */
+    text-align: center;
+    opacity: 0.9;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h2 {
+    color: #a2fd65;
+    margin-bottom: 2vh;
+}
+
+.modal-content label {
+    display: block;
+    margin: 1vh 0 0.5vh;
+    color: beige;
+    font-size: 1rem;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 1vh;
+    margin-bottom: 1.5vh;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    color: beige;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    color: white;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #ffdd57;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInFromTop {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+
+.form-grid {
+    display: flex;
+    gap: 20px;
+}
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.modal-content {
+    padding: 25px;
+    border-radius: 10px;
+}
