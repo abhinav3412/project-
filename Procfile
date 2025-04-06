@@ -1,1 +1,1 @@
-web: gunicorn gunicorn_entrypoint:app 
+web: gunicorn render_app:app 
